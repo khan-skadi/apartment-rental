@@ -32,10 +32,14 @@ userSchema.methods.hashPassword = function hashPassword(password) {
   });
 };
 
-// userSchema.methods.toJSON = function () {
-//   let obj = this.toObject();
-
-// };
+userSchema.methods.authenticate = function authenticate(password) {
+  return new Promise((resolve, reject) => {
+    bcrypt.compare(password, this.password, function (err, result) {
+      if (!result) return reject();
+      return resolve();
+    });
+  });
+};
 
 userSchema.pre("save", function (next) {
   if (this.password && this.isModified("password")) {
