@@ -4,19 +4,35 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+
+const routes = require("./src/routes");
 
 var app = express();
 
+mongoose.connect("mongodb://localhost:27017/testdb", {
+  useNewUrlParser: "true",
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+});
+mongoose.connection.on("error", (err) => {
+  console.log("err", err);
+});
+mongoose.connection.on("connected", (err, res) => {
+  console.log("mongoose is connected");
+});
+
 app.use(logger("dev"));
-app.use(express.json());
+app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
+app.get("/test", (req, res) => {
+  return res.end("Api working");
+});
+app.use("/", routes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
