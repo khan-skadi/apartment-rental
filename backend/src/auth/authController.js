@@ -1,5 +1,6 @@
 const User = require("../models/user.js");
 const jwt = require("jsonwebtoken");
+const { use } = require("./authRoute.js");
 
 async function login(req, res, next) {
   const { email, password } = req.body;
@@ -10,7 +11,7 @@ async function login(req, res, next) {
   try {
     user = await User.find()
       .where({ email })
-      .select("_id firstName lastName email password")
+      .select("_id firstName lastName email role password")
       .exec();
     user = user[0];
   } catch (err) {
@@ -29,10 +30,15 @@ async function login(req, res, next) {
 
   const privateKey = process.env.JWT_PRIVATE_KEY;
   const expiresIn = process.env.JWT_EXPIRE;
-
   try {
     jwt.sign(
-      { _id: user._id, email: user.email, password: user.password },
+      {
+        _id: user._id,
+        email: user.email,
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
       privateKey,
       { expiresIn },
       function (err, token) {
