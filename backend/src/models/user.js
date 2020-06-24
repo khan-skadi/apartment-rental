@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const uniqueValidator = require("mongoose-unique-validator");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
@@ -12,6 +13,7 @@ const userSchema = new Schema({
     required: true,
     default: "",
     trim: true,
+    lowercase: true,
   },
   password: { type: String, select: false },
   role: {
@@ -53,6 +55,8 @@ userSchema.pre("save", function (next) {
     next();
   }
 });
+
+userSchema.plugin(uniqueValidator);
 
 const User = mongoose.model("User", userSchema);
 
