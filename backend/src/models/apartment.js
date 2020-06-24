@@ -46,6 +46,12 @@ const apartmentSchema = new Schema({
     type: Schema.ObjectId,
     ref: "User",
   },
+  rentable: {
+    autoCreate: true,
+    type: Boolean,
+    default: true,
+    required: true,
+  },
 });
 
 const Apartment = mongoose.model("Apartment", apartmentSchema);

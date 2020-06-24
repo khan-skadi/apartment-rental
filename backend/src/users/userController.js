@@ -1,7 +1,4 @@
 const User = require("../models/user.js");
-const jwt = require("jsonwebtoken");
-const { query } = require("express");
-const { use } = require("../routes/index.js");
 
 function formatSort(order, orderBy) {
   let sort = {};
@@ -63,7 +60,7 @@ async function addUser(req, res, next) {
       return next(err);
     }
   } else {
-    res.status(401).send("This user doesn't have permission to get users");
+    res.status(401).send("This user doesn't have permission to add user");
   }
 }
 
@@ -94,7 +91,7 @@ async function updateUser(req, res, next) {
       return next(err);
     }
   } else {
-    res.status(401).send("This user doesn't have permission to get users");
+    res.status(401).send("This user doesn't have permission to update user");
   }
 }
 
@@ -118,7 +115,7 @@ async function deleteUser(req, res, next) {
       return next(err);
     }
   } else {
-    res.status(401).send("This user doesn't have permission to get users");
+    res.status(401).send("This user doesn't have permission to delete user");
   }
 }
 
