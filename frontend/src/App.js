@@ -3,10 +3,7 @@ import Main from "./main";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { ConnectedRouter } from "connected-react-router";
-import { createBrowserHistory } from "history";
-import configureStore from "./store";
-
-const history = createBrowserHistory();
+import configureStore, { history } from "./store";
 const { store, persistor } = configureStore();
 
 function App() {
