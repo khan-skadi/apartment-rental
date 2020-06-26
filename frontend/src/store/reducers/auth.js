@@ -9,6 +9,7 @@ const initialState = {
   me: null,
   loading: false,
   status: "INIT",
+  error: null,
 };
 
 export const authReducer = function (state = initialState, action) {
@@ -31,6 +32,29 @@ export const authReducer = function (state = initialState, action) {
       return {
         ...state,
         status: requestFailed(SIGNUP),
+        loading: false,
+        error: action.payload,
+      };
+    }
+    case requestPending(LOGIN): {
+      return {
+        ...state,
+        status: requestPending(LOGIN),
+        loading: true,
+      };
+    }
+    case requestSuccess(LOGIN): {
+      return {
+        ...state,
+        me: action.payload,
+        status: requestSuccess(LOGIN),
+        loading: false,
+      };
+    }
+    case requestFailed(LOGIN): {
+      return {
+        ...state,
+        status: requestFailed(LOGIN),
         loading: false,
         error: action.payload,
       };

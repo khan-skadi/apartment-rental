@@ -68,7 +68,6 @@ async function signup(req, res, next) {
     lastName: req.body.last_name,
     email: req.body.email,
     password: req.body.password,
-    role: req.body.role,
   });
 
   try {

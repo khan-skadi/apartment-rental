@@ -1,5 +1,6 @@
 var createError = require("http-errors");
 var express = require("express");
+var cors = require("cors");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
@@ -10,6 +11,8 @@ const bodyParser = require("body-parser");
 const routes = require("./src/routes");
 
 var app = express();
+
+app.use(cors());
 
 mongoose.connect("mongodb://localhost:27017/testdb", {
   useNewUrlParser: "true",

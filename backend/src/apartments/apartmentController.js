@@ -1,5 +1,9 @@
 const Apartment = require("../models/apartment.js");
 
+function isAdminOrRealtor(role) {
+  return role === "admin" || role === "realtor";
+}
+
 function formatSort(order, orderBy) {
   let sort = {};
   sort[orderBy] = order;
@@ -8,7 +12,7 @@ function formatSort(order, orderBy) {
 
 async function getApartments(req, res, next) {
   const user = req.user;
-  if (user.role === "admin") {
+  if (isAdminOrRealtor(user.role)) {
     try {
       const { currentPage, rowsCount, order, orderBy } = req.query;
       const apartments = await Apartment.find()
@@ -29,7 +33,7 @@ async function getApartments(req, res, next) {
 }
 
 async function addApartment(req, res, next) {
-  if (req.user.role === "admin") {
+  if (isAdminOrRealtor(req.user.role)) {
     try {
       const apartment = new Apartment({
         name: req.body.name,
@@ -47,12 +51,12 @@ async function addApartment(req, res, next) {
       return next(err);
     }
   } else {
-    res.status(401).send("This user doesn't have permission to get apartments");
+    res.status(401).send("This user doesn't have permission to add apartment");
   }
 }
 
 async function updateApartment(req, res, next) {
-  if (req.user.role === "admin") {
+  if (isAdminOrRealtor(req.user.role)) {
     try {
       const aprtmentId = req.params.id;
       let apartment;
@@ -69,6 +73,7 @@ async function updateApartment(req, res, next) {
       apartment.lat = req.body.lat || apartment.lat;
       apartment.lng = req.body.lng || apartment.lng;
       apartment.realtor = req.body.realtor || apartment.realtor;
+      apartment.rentable = req.body.rentable || apartment.rentable;
 
       try {
         const updatedApartment = await apartment.save();
@@ -80,15 +85,16 @@ async function updateApartment(req, res, next) {
       return next(err);
     }
   } else {
-    res.status(401).send("This user doesn't have permission to get users");
+    res
+      .status(401)
+      .send("This user doesn't have permission to update apartments");
   }
 }
 
 async function deleteApartment(req, res, next) {
-  if (req.user.role === "admin") {
+  if (isAdminOrRealtor(req.user.role)) {
     try {
       const apartmentId = req.params.id;
-
       const apartment = await Apartment.findOne({ _id: apartmentId });
       await apartment.remove();
       res.status(204).send();
@@ -96,7 +102,9 @@ async function deleteApartment(req, res, next) {
       return next(err);
     }
   } else {
-    res.status(401).send("This user doesn't have permission to get users");
+    res
+      .status(401)
+      .send("This user doesn't have permission to delete apartments");
   }
 }
 

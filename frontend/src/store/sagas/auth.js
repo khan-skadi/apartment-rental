@@ -6,7 +6,7 @@ import {
   requestFailed,
 } from "../../helper/request";
 import apiCall from "../../helper/apiCall";
-import { SIGNUP } from "../actionTypes";
+import { SIGNUP, LOGIN } from "../actionTypes";
 
 export function* signupSaga(action) {
   try {
@@ -21,6 +21,19 @@ export function* signupSaga(action) {
 
 export function* loginSaga(action) {
   try {
-    yield put({ type: requestPending("LOGIN") });
-  } catch (error) {}
+    yield put({ type: requestPending(LOGIN) });
+    const response = yield call(
+      apiCall,
+      "/auth/login/",
+      "POST",
+      { ...action.payload },
+      false
+    );
+    const { token } = response.data;
+    window.localStorage.setItem("rental_auth_token", token);
+    yield put({ type: requestSuccess(LOGIN), payload: response.data });
+    yield put(push("/main"));
+  } catch (error) {
+    yield put({ type: requestFailed(LOGIN), payload: error.response });
+  }
 }

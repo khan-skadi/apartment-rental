@@ -12,6 +12,7 @@ import Menu from "@material-ui/core/Menu";
 import HomeIcon from "@material-ui/icons/Home";
 import KeyboardReturnIcon from "@material-ui/icons/KeyboardReturn";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+import SearchIcon from "@material-ui/icons/Search";
 import PeopleIcon from "@material-ui/icons/People";
 import ApartmentIcon from "@material-ui/icons/Apartment";
 import NotificationsIcon from "@material-ui/icons/Notifications";
@@ -187,12 +188,21 @@ export default function Header() {
           <div className={classes.sectionDesktop}>
             {me ? (
               <>
-                <IconButton color="inherit">
-                  <PeopleIcon />
-                </IconButton>
-                <IconButton color="inherit">
-                  <ApartmentIcon />
-                </IconButton>
+                <NavLink to="/main">
+                  <IconButton className={classes.menuButton}>
+                    <SearchIcon />
+                  </IconButton>
+                </NavLink>
+                <NavLink to="/users">
+                  <IconButton className={classes.menuButton}>
+                    <PeopleIcon />
+                  </IconButton>
+                </NavLink>
+                <NavLink to="/apartments">
+                  <IconButton className={classes.menuButton}>
+                    <ApartmentIcon />
+                  </IconButton>
+                </NavLink>
                 <IconButton
                   edge="end"
                   aria-label="account of current user"
