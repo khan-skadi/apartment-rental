@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useReducer } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { lighten, makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -22,51 +22,11 @@ function createData(name, location, decription, floor_size, price, realtor) {
   return { name, location, decription, floor_size, price, realtor };
 }
 
-const rows = [
-  createData("Cupcake", "Macedonia", "This is House", 3.7, 67, 4.3, "John"),
-  createData("Donut", "Macedonia", "This is House", 25.0, 51, 4.9, "John"),
-  createData("Eclair", "Macedonia", "This is House", 16.0, 24, 6.0, "John"),
-  createData(
-    "Frozen yoghurt",
-    "Macedonia",
-    "This is House",
-    6.0,
-    24,
-    4.0,
-    "John"
-  ),
-  createData(
-    "Gingerbread",
-    "Macedonia",
-    "This is House",
-    16.0,
-    49,
-    3.9,
-    "John"
-  ),
-  createData("Honeycomb", "Macedonia", "This is House", 3.2, 87, 6.5, "John"),
-  createData(
-    "Ice cream sandwich",
-    "Macedonia",
-    "This is House",
-    9.0,
-    37,
-    4.3,
-    "John"
-  ),
-  createData("Jelly Bean", "Macedonia", "This is House", 0.0, 94, 0.0, "John"),
-  createData("KitKat", "Macedonia", "This is House", 26.0, 65, 7.0, "John"),
-  createData("Lollipop", "Macedonia", "This is House", 0.2, 98, 0.0, "John"),
-  createData("Marshmallow", "Macedonia", "This is House", 0, 81, 2.0, "John"),
-  createData("Nougat", "Macedonia", "This is House", 19.0, 9, 37.0, "John"),
-  createData("Oreo", "Macedonia", "This is House", 18.0, 63, 4.0, "John"),
-];
-
 const headCells = [
   {
     id: "name",
     numeric: false,
-    disablePadding: true,
+    disablePadding: false,
     label: "Name",
   },
   { id: "location", numeric: true, disablePadding: false, label: "Location" },
@@ -77,13 +37,13 @@ const headCells = [
     label: "Description",
   },
   {
-    id: "floor_size",
+    id: "floorSize",
     numeric: true,
     disablePadding: false,
     label: "Floor Size",
   },
   {
-    id: "price",
+    id: "pricePerMonth",
     numeric: true,
     disablePadding: false,
     label: "Price per month",
@@ -168,6 +128,8 @@ const ApartmentsTableToolbar = (props) => {
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(1),
   },
   paper: {
     width: "100%",
@@ -192,15 +154,18 @@ const useStyles = makeStyles((theme) => ({
 export default function ApartmentsTable() {
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("location");
+  const [orderBy, setOrderBy] = React.useState("name");
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(actions.getApartments(order, orderBy, rowsPerPage, page));
+    dispatch(actions.getApartments({ order, orderBy, rowsPerPage, page }));
   }, [order, orderBy, page, rowsPerPage]);
+
+  const { apartmentsInfo } = useSelector((state) => state.apartment);
+  const { apartments, totalCount } = apartmentsInfo;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -221,9 +186,6 @@ export default function ApartmentsTable() {
     setDense(event.target.checked);
   };
 
-  const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -240,42 +202,36 @@ export default function ApartmentsTable() {
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
             />
             <TableBody>
-              {rows.map((row, index) => {
-                const labelId = `enhanced-table-checkbox-${index}`;
+              {apartments &&
+                apartments.map((row, index) => {
+                  const labelId = `enhanced-table-checkbox-${index}`;
 
-                return (
-                  <TableRow hover tabIndex={-1} key={row.name}>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                    >
-                      {row.name}
-                    </TableCell>
-                    <TableCell align="right">{row.location}</TableCell>
-                    <TableCell align="right">{row.decription}</TableCell>
-                    <TableCell align="right">{row.floor_size}</TableCell>
-                    <TableCell align="right">{row.price}</TableCell>
-                    <TableCell align="right">{row.realtor}</TableCell>
-                  </TableRow>
-                );
-              })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
+                  return (
+                    <TableRow hover tabIndex={-1} key={row.name}>
+                      <TableCell component="th" id={labelId} scope="row">
+                        {row.name}
+                      </TableCell>
+                      <TableCell align="right">{row.location}</TableCell>
+                      <TableCell align="right">{row.description}</TableCell>
+                      <TableCell align="right">
+                        {row.floorSize && row.floorSize.$numberDecimal}
+                      </TableCell>
+                      <TableCell align="right">
+                        {row.pricePerMonth && row.pricePerMonth.$numberDecimal}
+                      </TableCell>
+                      <TableCell align="right">{row.realtor}</TableCell>
+                    </TableRow>
+                  );
+                })}
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={totalCount}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}

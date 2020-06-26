@@ -19,6 +19,7 @@ const apiCall = (
 
   axios.defaults.baseURL = process.env.REACT_APP_BACKEND_URL;
 
+  console.log("-----------", params);
   return axios.request({
     headers,
     url,

@@ -4,6 +4,20 @@ const Schema = mongoose.Schema;
 const apartmentSchema = new Schema({
   name: { type: String, required: true, default: "", trim: true },
   description: { type: String, required: true, default: "", trim: true },
+  rooms: {
+    type: Number,
+    required: true,
+    default: 1,
+    get: (v) => Math.round(v),
+    set: (v) => Math.round(v),
+    validate: {
+      validator: function (v) {
+        return v >= 1;
+      },
+      message: (props) => `${props.value} is not a valid number of rooms!`,
+    },
+    alias: "i",
+  },
   floorSize: {
     type: mongoose.Types.Decimal128,
     required: true,
