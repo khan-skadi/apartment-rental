@@ -1,4 +1,4 @@
-import { GET_APARTMENTS } from "../actionTypes";
+import { GET_APARTMENTS, SET_APARTMENTS_FILTER } from "../actionTypes";
 import {
   requestPending,
   requestSuccess,
@@ -10,10 +10,21 @@ const initialState = {
   status: "INIT",
   error: null,
   apartmentsInfo: [],
+  apartmentsFilter: {
+    priceValue: [1, 10000],
+    floorSizeValue: [100, 10000],
+    roomsValue: [1, 10],
+  },
 };
 
 export const apartmentReducer = function (state = initialState, action) {
   switch (action.type) {
+    case SET_APARTMENTS_FILTER: {
+      return {
+        ...state,
+        apartmentsFilter: action.payload,
+      };
+    }
     case requestPending(GET_APARTMENTS): {
       return {
         ...state,

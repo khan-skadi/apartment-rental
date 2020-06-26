@@ -3,6 +3,7 @@ import {
   GET_APARTMENTS,
   UPDATE_APARTMENT,
   DELETE_APARTMENT,
+  SET_APARTMENTS_FILTER,
 } from "../actionTypes";
 
 export const addApartment = (payload) => {
@@ -19,4 +20,8 @@ export const updateApartment = (payload) => {
 
 export const deleteApartment = (payload) => {
   return { type: DELETE_APARTMENT, payload };
+};
+
+export const setApartmentsFilter = (payload) => {
+  return { type: SET_APARTMENTS_FILTER, payload };
 };

@@ -14,7 +14,13 @@ const authPersistConfig = {
 const apartmentPersistConfig = {
   key: "apartment",
   storage: storage,
-  blacklist: [],
+  blacklist: [
+    "loading",
+    "status",
+    "error",
+    "apartmentsInfo",
+    "apartmentsFilter",
+  ],
 };
 
 const createRootReducer = (history) =>

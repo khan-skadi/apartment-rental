@@ -15,6 +15,8 @@ import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
+import Slider from "@material-ui/core/Slider";
+import Grid from "@material-ui/core/Grid";
 
 import * as actions from "../../store/actions";
 
@@ -49,6 +51,12 @@ const headCells = [
     label: "Price per month",
   },
   {
+    id: "rooms",
+    numeric: true,
+    disablePadding: false,
+    label: "Rooms",
+  },
+  {
     id: "realtor",
     numeric: true,
     disablePadding: false,
@@ -65,9 +73,9 @@ function ApartmentsTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        {headCells.map((headCell) => (
+        {headCells.map((headCell, idx) => (
           <TableCell
-            key={headCell.id}
+            key={idx}
             align={headCell.numeric ? "right" : "left"}
             padding={headCell.disablePadding ? "none" : "default"}
             sortDirection={orderBy === headCell.id ? order : false}
@@ -106,21 +114,131 @@ const useToolbarStyles = makeStyles((theme) => ({
   title: {
     flex: "1 1 100%",
   },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
 }));
 
 const ApartmentsTableToolbar = (props) => {
+  const dispatch = useDispatch();
   const classes = useToolbarStyles();
+  const [priceValue, setPriceValue] = React.useState([1, 10000]);
+  const [floorSizeValue, setFloorSizeValue] = React.useState([100, 10000]);
+  const [roomsValue, setRoomsValue] = React.useState([1, 10]);
+
+  const { pageInfo } = props;
+
+  // handle Price Change
+  const handlePriceChange = (event, newValue) => {
+    setPriceValue(newValue);
+  };
+  const handlePriceUp = (event, newValue) => {
+    setPriceValue(newValue);
+    dispatch(
+      actions.setApartmentsFilter({ priceValue, floorSizeValue, roomsValue })
+    );
+    dispatch(actions.getApartments(pageInfo));
+  };
+
+  // handle Floor Size Change
+  const handleFloorSizeChange = (event, newValue) => {
+    setFloorSizeValue(newValue);
+  };
+  const handleFloorSizeUp = (event, newValue) => {
+    setFloorSizeValue(newValue);
+    dispatch(
+      actions.setApartmentsFilter({ priceValue, floorSizeValue, roomsValue })
+    );
+    dispatch(actions.getApartments(pageInfo));
+  };
+
+  // handle Rooms Number Change
+  const handleRoomsChange = (event, newValue) => {
+    setRoomsValue(newValue);
+  };
+  const handleRoomsUp = (event, newValue) => {
+    setRoomsValue(newValue);
+    dispatch(
+      actions.setApartmentsFilter({ priceValue, floorSizeValue, roomsValue })
+    );
+    dispatch(actions.getApartments(pageInfo));
+  };
 
   return (
     <Toolbar className={classes.root}>
-      <Typography
-        className={classes.title}
-        variant="h6"
-        id="tableTitle"
-        component="div"
-      >
-        Find Apartments
-      </Typography>
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={3}>
+          <Typography
+            className={classes.title}
+            variant="h6"
+            id="tableTitle"
+            component="div"
+          >
+            Find Apartmenns
+          </Typography>
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <Typography
+            className={classes.title}
+            variant="h6"
+            id="tableTitle"
+            component="div"
+          >
+            Price
+          </Typography>
+          <Slider
+            value={priceValue}
+            onChange={handlePriceChange}
+            onChangeCommitted={handlePriceUp}
+            valueLabelDisplay="auto"
+            aria-labelledby="range-slider"
+            max={10000}
+            min={1}
+            step={1000}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <Typography
+            className={classes.title}
+            variant="h6"
+            id="tableTitle"
+            component="div"
+          >
+            Rooms
+          </Typography>
+          <Slider
+            value={roomsValue}
+            onChange={handleRoomsChange}
+            onChangeCommitted={handleRoomsUp}
+            valueLabelDisplay="auto"
+            aria-labelledby="range-slider"
+            max={10}
+            min={1}
+            step={1}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <Typography
+            className={classes.title}
+            variant="h6"
+            id="tableTitle"
+            component="div"
+          >
+            Floor Size
+          </Typography>
+          <Slider
+            value={floorSizeValue}
+            onChange={handleFloorSizeChange}
+            onChangeCommitted={handleFloorSizeUp}
+            valueLabelDisplay="auto"
+            aria-labelledby="range-slider"
+            max={10000}
+            min={100}
+            step={1000}
+          />
+        </Grid>
+      </Grid>
     </Toolbar>
   );
 };
@@ -189,7 +307,9 @@ export default function ApartmentsTable() {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <ApartmentsTableToolbar />
+        <ApartmentsTableToolbar
+          pageInfo={{ order, orderBy, rowsPerPage, page }}
+        />
         <TableContainer>
           <Table
             className={classes.table}
@@ -209,7 +329,7 @@ export default function ApartmentsTable() {
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
-                    <TableRow hover tabIndex={-1} key={row.name}>
+                    <TableRow hover tabIndex={-1} key={index}>
                       <TableCell component="th" id={labelId} scope="row">
                         {row.name}
                       </TableCell>
@@ -221,6 +341,7 @@ export default function ApartmentsTable() {
                       <TableCell align="right">
                         {row.pricePerMonth && row.pricePerMonth.$numberDecimal}
                       </TableCell>
+                      <TableCell align="right">{row.rooms}</TableCell>
                       <TableCell align="right">{row.realtor}</TableCell>
                     </TableRow>
                   );

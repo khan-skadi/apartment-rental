@@ -1,4 +1,4 @@
-import { put, call } from "redux-saga/effects";
+import { put, call, select } from "redux-saga/effects";
 import { push } from "connected-react-router";
 import {
   requestPending,
@@ -10,6 +10,12 @@ import { GET_APARTMENTS } from "../actionTypes";
 
 export function* getApartmentsSaga(action) {
   try {
+    const state = yield select();
+    const {
+      priceValue,
+      floorSizeValue,
+      roomsValue,
+    } = state.apartment.apartmentsFilter;
     yield put({ type: requestPending(GET_APARTMENTS) });
     console.log("action paylaod", action.payload);
     const { order, orderBy, rowsPerPage, page } = action.payload;
@@ -18,6 +24,12 @@ export function* getApartmentsSaga(action) {
       orderBy,
       rowsCount: rowsPerPage,
       currentPage: page,
+      priceMin: priceValue[0],
+      priceMax: priceValue[1],
+      floorSizeMin: floorSizeValue[0],
+      floorSizeMax: floorSizeValue[1],
+      roomsMin: roomsValue[0],
+      roomsMax: roomsValue[1],
     });
     yield put({ type: requestSuccess(GET_APARTMENTS), payload: response.data });
     yield put(push("/main"));
