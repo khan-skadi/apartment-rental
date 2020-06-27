@@ -41,7 +41,6 @@ export default function SignIn() {
   const { handleSubmit, control, errors } = useForm();
 
   const onSubmit = (data) => {
-    console.log("--------", data);
     dispatch(actions.login(data));
   };
 

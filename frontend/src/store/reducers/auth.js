@@ -1,4 +1,4 @@
-import { SIGNUP, LOGIN } from "../actionTypes";
+import { SIGNUP, LOGIN, REMOVE_AUTH } from "../actionTypes";
 import {
   requestPending,
   requestSuccess,
@@ -57,6 +57,14 @@ export const authReducer = function (state = initialState, action) {
         status: requestFailed(LOGIN),
         loading: false,
         error: action.payload,
+      };
+    }
+    case REMOVE_AUTH: {
+      return {
+        me: null,
+        loading: false,
+        status: "INIT",
+        error: null,
       };
     }
     default:

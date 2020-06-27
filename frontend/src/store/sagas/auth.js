@@ -6,7 +6,7 @@ import {
   requestFailed,
 } from "../../helper/request";
 import apiCall from "../../helper/apiCall";
-import { SIGNUP, LOGIN } from "../actionTypes";
+import { SIGNUP, LOGIN, REMOVE_AUTH } from "../actionTypes";
 
 export function* signupSaga(action) {
   try {
@@ -36,4 +36,12 @@ export function* loginSaga(action) {
   } catch (error) {
     yield put({ type: requestFailed(LOGIN), payload: error.response });
   }
+}
+
+export function* logoutSaga(action) {
+  try {
+    yield put({ type: REMOVE_AUTH });
+    window.localStorage.removeItem("rental_auth_token");
+    yield put(push("/"));
+  } catch (error) {}
 }

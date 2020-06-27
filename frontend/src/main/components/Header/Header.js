@@ -19,6 +19,8 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import { NavLink } from "react-router-dom";
 
+import * as actions from "../../../store/actions";
+
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
@@ -86,6 +88,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Header() {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const { me } = useSelector((state) => state.auth);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -110,6 +113,11 @@ export default function Header() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const handleLogout = (event) => {
+    handleMenuClose();
+    dispatch(actions.logout());
+  };
+
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -122,7 +130,7 @@ export default function Header() {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Log out</MenuItem>
+      <MenuItem onClick={handleLogout}>Log out</MenuItem>
     </Menu>
   );
 
@@ -137,33 +145,54 @@ export default function Header() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <PeopleIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton aria-label="show 11 new notifications" color="inherit">
-          <Badge badgeContent={11} color="secondary">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
+      {me ? (
+        <>
+          <NavLink to="/main">
+            <MenuItem>
+              <IconButton color="inherit">
+                <SearchIcon />
+              </IconButton>
+              <p>Find Apartment</p>
+            </MenuItem>
+          </NavLink>
+          <NavLink to="/users">
+            <MenuItem>
+              <IconButton color="inherit">
+                <PeopleIcon />
+              </IconButton>
+              <p>Users</p>
+            </MenuItem>
+          </NavLink>
+          <NavLink to="/apartments">
+            <MenuItem>
+              <IconButton color="inherit">
+                <ApartmentIcon />
+              </IconButton>
+              <p>Apartments</p>
+            </MenuItem>
+          </NavLink>
+          <MenuItem onClick={handleProfileMenuOpen}>
+            <IconButton
+              aria-label="account of current user"
+              aria-controls="primary-search-account-menu"
+              aria-haspopup="true"
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+            <p>Profile</p>
+          </MenuItem>
+        </>
+      ) : (
+        <NavLink to="/signup">
+          <MenuItem>
+            <IconButton color="inherit" className={classes.signupButton}>
+              <KeyboardReturnIcon />
+            </IconButton>
+            <p>Log out</p>
+          </MenuItem>
+        </NavLink>
+      )}
     </Menu>
   );
 

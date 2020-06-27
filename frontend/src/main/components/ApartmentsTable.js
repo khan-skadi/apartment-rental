@@ -196,6 +196,7 @@ const ApartmentsTableToolbar = (props) => {
             max={10000}
             min={1}
             step={1000}
+            marks={true}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -216,6 +217,7 @@ const ApartmentsTableToolbar = (props) => {
             max={10}
             min={1}
             step={1}
+            marks={true}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -236,6 +238,7 @@ const ApartmentsTableToolbar = (props) => {
             max={10000}
             min={100}
             step={1000}
+            marks={true}
           />
         </Grid>
       </Grid>

@@ -17,7 +17,7 @@ const apartmentPersistConfig = {
   blacklist: [
     "loading",
     "status",
-    "error",
+    "error",  
     "apartmentsInfo",
     "apartmentsFilter",
   ],

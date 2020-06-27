@@ -1,6 +1,7 @@
 export const SIGNUP = "SIGNUP";
 export const LOGIN = "LOGIN";
 export const LOGOUT = "LOGOUT";
+export const REMOVE_AUTH = "REMOVE_AUTH";
 export const GET_APARTMENTS = "GET_APARTMENTS";
 export const ADD_APARTMENT = "ADD_APARTMENT";
 export const UPDATE_APARTMENT = "UPDATE_APARTMENT";
