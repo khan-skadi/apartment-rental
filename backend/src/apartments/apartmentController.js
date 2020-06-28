@@ -25,41 +25,81 @@ async function getApartments(req, res, next) {
         floorSizeMax,
         roomsMin,
         roomsMax,
+        realtorAccess,
       } = req.query;
+
       priceMin = parseInt(priceMin);
       priceMax = parseInt(priceMax);
       floorSizeMin = parseInt(floorSizeMin);
       floorSizeMax = parseInt(floorSizeMax);
       roomsMin = parseInt(roomsMin);
       roomsMax = parseInt(roomsMax);
-      const apartments = await Apartment.find()
-        .where("pricePerMonth")
-        .gt(priceMin - 1)
-        .lt(priceMax + 1)
-        .where("floorSize")
-        .gt(floorSizeMin - 1)
-        .lt(floorSizeMax + 1)
-        .where("rooms")
-        .gt(roomsMin - 1)
-        .lt(roomsMax + 1)
-        .sort(formatSort(order, orderBy))
-        .skip(parseInt(currentPage) * parseInt(rowsCount))
-        .limit(parseInt(rowsCount))
-        .lean();
 
-      const totalApartments = await await Apartment.find()
-        .where("pricePerMonth")
-        .gt(priceMin - 1)
-        .lt(priceMax + 1)
-        .where("floorSize")
-        .gt(floorSizeMin - 1)
-        .lt(floorSizeMax + 1)
-        .where("rooms")
-        .gt(roomsMin - 1)
-        .lt(roomsMax + 1)
-        .lean();
-      const totalCount = totalApartments.length;
-      res.send({ apartments, totalCount });
+      if (realtorAccess) {
+        const apartments = await Apartment.find()
+          .where("pricePerMonth")
+          .gt(priceMin - 1)
+          .lt(priceMax + 1)
+          .where("floorSize")
+          .gt(floorSizeMin - 1)
+          .lt(floorSizeMax + 1)
+          .where("rooms")
+          .gt(roomsMin - 1)
+          .lt(roomsMax + 1)
+          .sort(formatSort(order, orderBy))
+          .skip(parseInt(currentPage) * parseInt(rowsCount))
+          .limit(parseInt(rowsCount))
+          .lean();
+
+        const totalApartments = await await Apartment.find()
+          .where("pricePerMonth")
+          .gt(priceMin - 1)
+          .lt(priceMax + 1)
+          .where("floorSize")
+          .gt(floorSizeMin - 1)
+          .lt(floorSizeMax + 1)
+          .where("rooms")
+          .gt(roomsMin - 1)
+          .lt(roomsMax + 1)
+          .lean();
+
+        const totalCount = totalApartments.length;
+        res.send({ apartments, totalCount });
+      } else {
+        const apartments = await Apartment.find()
+          .where("pricePerMonth")
+          .gt(priceMin - 1)
+          .lt(priceMax + 1)
+          .where("floorSize")
+          .gt(floorSizeMin - 1)
+          .lt(floorSizeMax + 1)
+          .where("rooms")
+          .gt(roomsMin - 1)
+          .lt(roomsMax + 1)
+          .where("rentable")
+          .equals(true)
+          .sort(formatSort(order, orderBy))
+          .skip(parseInt(currentPage) * parseInt(rowsCount))
+          .limit(parseInt(rowsCount))
+          .lean();
+
+        const totalApartments = await await Apartment.find()
+          .where("pricePerMonth")
+          .gt(priceMin - 1)
+          .lt(priceMax + 1)
+          .where("floorSize")
+          .gt(floorSizeMin - 1)
+          .lt(floorSizeMax + 1)
+          .where("rooms")
+          .gt(roomsMin - 1)
+          .lt(roomsMax + 1)
+          .where("rentable")
+          .equals(true)
+          .lean();
+
+        const totalCount = totalApartments.length;
+        res.send({ apartments, totalCount });
+      }
     } catch (err) {
       next(err);
     }

@@ -13,7 +13,7 @@ const sagaMiddleware = createSagaMiddleware();
 const rootPersistConfig = {
   key: "root",
   storage,
-  blacklist: ["apartment"],
+  blacklist: ["apartment", "user"],
 };
 
 export default function configureStore(preloadedState = {}) {

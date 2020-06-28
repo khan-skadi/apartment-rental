@@ -4,6 +4,7 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { authReducer } from "./auth";
 import { apartmentReducer } from "./apartment";
+import { userReducer } from "./user";
 
 const authPersistConfig = {
   key: "auth",
@@ -17,10 +18,16 @@ const apartmentPersistConfig = {
   blacklist: [
     "loading",
     "status",
-    "error",  
+    "error",
     "apartmentsInfo",
     "apartmentsFilter",
   ],
+};
+
+const userPersistConfig = {
+  key: "user",
+  storage: storage,
+  blacklist: ["loading", "status", "error", "realtorsInfo"],
 };
 
 const createRootReducer = (history) =>
@@ -28,6 +35,7 @@ const createRootReducer = (history) =>
     router: connectRouter(history),
     auth: persistReducer(authPersistConfig, authReducer),
     apartment: persistReducer(apartmentPersistConfig, apartmentReducer),
+    user: persistReducer(userPersistConfig, userReducer),
   });
 
 export default createRootReducer;

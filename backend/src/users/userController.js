@@ -119,9 +119,30 @@ async function deleteUser(req, res, next) {
   }
 }
 
+async function getRealtors(req, res, next) {
+  const user = req.user;
+  if (user.role === "admin" || user.role === "realtor") {
+    try {
+      // all realtors and admins except the request user
+      const users = await User.find({
+        _id: { $ne: user._id },
+        role: { $ne: "client" },
+      }).lean();
+      res.send({ users });
+    } catch (err) {
+      next(err);
+    }
+  } else {
+    res
+      .status(401)
+      .send("This user doesn't have permission to get realtors and admins");
+  }
+}
+
 module.exports = {
   getUsers,
   addUser,
   updateUser,
   deleteUser,
+  getRealtors,
 };

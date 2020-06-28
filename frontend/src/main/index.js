@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Rent from "./pages/Rent";
 import Users from "./pages/Users";
 import Apartments from "./pages/Apartments";
+import AddApartment from "./pages/Apartments/AddApartment";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
@@ -22,6 +23,9 @@ const Main = (props) => {
         {me && <Route exact path="/main" component={Rent}></Route>}
         {me && <Route exact path="/users" component={Users}></Route>}
         {me && <Route exact path="/apartments" component={Apartments}></Route>}
+        {me && (
+          <Route exact path="/apartment/add" component={AddApartment}></Route>
+        )}
         <Route path="*" render={() => <Redirect to="/" />} />
       </Switch>
     </>

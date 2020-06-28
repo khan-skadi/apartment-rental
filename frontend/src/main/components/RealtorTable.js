@@ -17,6 +17,10 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import Slider from "@material-ui/core/Slider";
 import Grid from "@material-ui/core/Grid";
+import { NavLink } from "react-router-dom";
+import MenuItem from "@material-ui/core/MenuItem";
+import IconButton from "@material-ui/core/IconButton";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 
 import * as actions from "../../store/actions";
 
@@ -31,10 +35,10 @@ const headCells = [
     disablePadding: false,
     label: "Name",
   },
-  { id: "location", numeric: true, disablePadding: false, label: "Location" },
+  { id: "location", numeric: false, disablePadding: false, label: "Location" },
   {
     id: "description",
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: "Description",
   },
@@ -58,13 +62,13 @@ const headCells = [
   },
   {
     id: "realtor",
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: "Realtor",
   },
 ];
 
-function ApartmentsTableHead(props) {
+function RealtorTableHead(props) {
   const { classes, order, orderBy, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -99,7 +103,7 @@ function ApartmentsTableHead(props) {
   );
 }
 
-ApartmentsTableHead.propTypes = {
+RealtorTableHead.propTypes = {
   classes: PropTypes.object.isRequired,
   onRequestSort: PropTypes.func.isRequired,
   order: PropTypes.oneOf(["asc", "desc"]).isRequired,
@@ -120,7 +124,7 @@ const useToolbarStyles = makeStyles((theme) => ({
   },
 }));
 
-const ApartmentsTableToolbar = (props) => {
+const RealtorTableToolbar = (props) => {
   const dispatch = useDispatch();
   const classes = useToolbarStyles();
   const [priceValue, setPriceValue] = React.useState([1, 10000]);
@@ -128,6 +132,8 @@ const ApartmentsTableToolbar = (props) => {
   const [roomsValue, setRoomsValue] = React.useState([1, 10]);
 
   const { pageInfo } = props;
+
+  useEffect(() => {}, []);
 
   // handle Price Change
   const handlePriceChange = (event, newValue) => {
@@ -138,7 +144,7 @@ const ApartmentsTableToolbar = (props) => {
     dispatch(
       actions.setApartmentsFilter({ priceValue, floorSizeValue, roomsValue })
     );
-    dispatch(actions.getApartments(pageInfo));
+    dispatch(actions.getApartments({ ...pageInfo, realtorAccess: true }));
   };
 
   // handle Floor Size Change
@@ -150,7 +156,7 @@ const ApartmentsTableToolbar = (props) => {
     dispatch(
       actions.setApartmentsFilter({ priceValue, floorSizeValue, roomsValue })
     );
-    dispatch(actions.getApartments(pageInfo));
+    dispatch(actions.getApartments({ ...pageInfo, realtorAccess: true }));
   };
 
   // handle Rooms Number Change
@@ -162,7 +168,7 @@ const ApartmentsTableToolbar = (props) => {
     dispatch(
       actions.setApartmentsFilter({ priceValue, floorSizeValue, roomsValue })
     );
-    dispatch(actions.getApartments(pageInfo));
+    dispatch(actions.getApartments({ ...pageInfo, realtorAccess: true }));
   };
 
   return (
@@ -178,7 +184,17 @@ const ApartmentsTableToolbar = (props) => {
             Find Apartments
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={3}>
+        <Grid item xs={12} sm={2}>
+          <NavLink to="/apartment/add">
+            <MenuItem>
+              <IconButton color="inherit">
+                <AddCircleIcon />
+              </IconButton>
+              <p>Add Apartment</p>
+            </MenuItem>
+          </NavLink>
+        </Grid>
+        <Grid item xs={12} sm={2}>
           <Typography
             className={classes.title}
             variant="h6"
@@ -199,7 +215,7 @@ const ApartmentsTableToolbar = (props) => {
             marks={true}
           />
         </Grid>
-        <Grid item xs={12} sm={3}>
+        <Grid item xs={12} sm={2}>
           <Typography
             className={classes.title}
             variant="h6"
@@ -220,7 +236,7 @@ const ApartmentsTableToolbar = (props) => {
             marks={true}
           />
         </Grid>
-        <Grid item xs={12} sm={3}>
+        <Grid item xs={12} sm={2}>
           <Typography
             className={classes.title}
             variant="h6"
@@ -272,7 +288,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ApartmentsTable() {
+export default function RealtorTable() {
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("name");
@@ -288,7 +304,15 @@ export default function ApartmentsTable() {
     dispatch(
       actions.setApartmentsFilter({ priceValue, floorSizeValue, roomsValue })
     );
-    dispatch(actions.getApartments({ order, orderBy, rowsPerPage, page }));
+    dispatch(
+      actions.getApartments({
+        order,
+        orderBy,
+        rowsPerPage,
+        page,
+        realtorAccess: true,
+      })
+    );
   }, [order, orderBy, page, rowsPerPage]);
 
   const { apartmentsInfo } = useSelector((state) => state.apartment);
@@ -316,9 +340,7 @@ export default function ApartmentsTable() {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <ApartmentsTableToolbar
-          pageInfo={{ order, orderBy, rowsPerPage, page }}
-        />
+        <RealtorTableToolbar pageInfo={{ order, orderBy, rowsPerPage, page }} />
         <TableContainer>
           <Table
             className={classes.table}
@@ -326,7 +348,7 @@ export default function ApartmentsTable() {
             size={dense ? "small" : "medium"}
             aria-label="enhanced table"
           >
-            <ApartmentsTableHead
+            <RealtorTableHead
               classes={classes}
               order={order}
               orderBy={orderBy}
@@ -342,8 +364,8 @@ export default function ApartmentsTable() {
                       <TableCell component="th" id={labelId} scope="row">
                         {row.name}
                       </TableCell>
-                      <TableCell align="right">{row.location}</TableCell>
-                      <TableCell align="right">{row.description}</TableCell>
+                      <TableCell align="left">{row.location}</TableCell>
+                      <TableCell align="left">{row.description}</TableCell>
                       <TableCell align="right">
                         {row.floorSize && row.floorSize.$numberDecimal}
                       </TableCell>
@@ -351,7 +373,7 @@ export default function ApartmentsTable() {
                         {row.pricePerMonth && row.pricePerMonth.$numberDecimal}
                       </TableCell>
                       <TableCell align="right">{row.rooms}</TableCell>
-                      <TableCell align="right">{row.realtor}</TableCell>
+                      <TableCell align="left">{row.realtor}</TableCell>
                     </TableRow>
                   );
                 })}
