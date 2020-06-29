@@ -8,7 +8,7 @@ const containerStyle = {
   height: "100%",
 };
 
-function MyComponent(props) {
+function ApartmentMap(props) {
   const { placeholder, center, searchBoxChange } = props;
   const [autoComplete, setAutoComplete] = useState(null);
   const onLoad = (autoComplete) => {
@@ -60,4 +60,4 @@ function MyComponent(props) {
   );
 }
 
-export default React.memo(MyComponent);
+export default React.memo(ApartmentMap);

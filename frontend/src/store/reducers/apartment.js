@@ -2,6 +2,7 @@ import {
   GET_APARTMENTS,
   SET_APARTMENTS_FILTER,
   SAVE_EDIT_APARTMENT,
+  GET_TOTAL_APARTMENTS,
 } from "../actionTypes";
 import {
   requestPending,
@@ -20,6 +21,7 @@ const initialState = {
     roomsValue: [1, 10],
   },
   apartment: null,
+  totalApartments: [],
 };
 
 export const apartmentReducer = function (state = initialState, action) {
@@ -55,6 +57,29 @@ export const apartmentReducer = function (state = initialState, action) {
       return {
         ...state,
         status: requestFailed(GET_APARTMENTS),
+        loading: false,
+        error: action.payload,
+      };
+    }
+    case requestPending(GET_TOTAL_APARTMENTS): {
+      return {
+        ...state,
+        status: requestPending(GET_TOTAL_APARTMENTS),
+        loading: true,
+      };
+    }
+    case requestSuccess(GET_TOTAL_APARTMENTS): {
+      return {
+        ...state,
+        status: requestSuccess(GET_TOTAL_APARTMENTS),
+        loading: false,
+        totalApartments: action.payload,
+      };
+    }
+    case requestFailed(GET_TOTAL_APARTMENTS): {
+      return {
+        ...state,
+        status: requestFailed(GET_TOTAL_APARTMENTS),
         loading: false,
         error: action.payload,
       };

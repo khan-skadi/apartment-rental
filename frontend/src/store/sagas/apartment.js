@@ -11,6 +11,7 @@ import {
   ADD_APARTMENT,
   UPDATE_APARTMENT,
   DELETE_APARTMENT,
+  GET_TOTAL_APARTMENTS,
 } from "../actionTypes";
 
 export function* addApartmentSaga(action) {
@@ -121,5 +122,44 @@ export function* getApartmentsSaga(action) {
     });
   } catch (error) {
     yield put({ type: requestFailed(GET_APARTMENTS), payload: error.response });
+  }
+}
+
+export function* getTotalApartmentsSaga(action) {
+  try {
+    const state = yield select();
+    const {
+      priceValue,
+      floorSizeValue,
+      roomsValue,
+    } = state.apartment.apartmentsFilter;
+
+    yield put({ type: requestPending(GET_TOTAL_APARTMENTS) });
+
+    const response = yield call(
+      apiCall,
+      "/apartments/total",
+      "GET",
+      null,
+      true,
+      {
+        priceMin: priceValue[0],
+        priceMax: priceValue[1],
+        floorSizeMin: floorSizeValue[0],
+        floorSizeMax: floorSizeValue[1],
+        roomsMin: roomsValue[0],
+        roomsMax: roomsValue[1],
+      }
+    );
+
+    yield put({
+      type: requestSuccess(GET_TOTAL_APARTMENTS),
+      payload: response.data,
+    });
+  } catch (error) {
+    yield put({
+      type: requestFailed(GET_TOTAL_APARTMENTS),
+      payload: error.response,
+    });
   }
 }

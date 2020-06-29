@@ -224,11 +224,11 @@ export default function EditApartment() {
                       rules={{
                         required: "Longitude field is required",
                         min: {
-                          value: -90,
+                          value: -180,
                           message: "Longitude should be bigger than -180",
                         },
                         max: {
-                          value: 90,
+                          value: 180,
                           message: "Longitude should be smaller than 180",
                         },
                       }}

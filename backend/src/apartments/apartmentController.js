@@ -185,9 +185,92 @@ async function deleteApartment(req, res, next) {
   }
 }
 
+async function getTotalApartments(req, res, next) {
+  const user = req.user;
+  try {
+    let {
+      priceMin,
+      priceMax,
+      floorSizeMin,
+      floorSizeMax,
+      roomsMin,
+      roomsMax,
+    } = req.query;
+
+    priceMin = parseInt(priceMin);
+    priceMax = parseInt(priceMax);
+    floorSizeMin = parseInt(floorSizeMin);
+    floorSizeMax = parseInt(floorSizeMax);
+    roomsMin = parseInt(roomsMin);
+    roomsMax = parseInt(roomsMax);
+    if (isAdminOrRealtor(user.role)) {
+      const apartments = await Apartment.find()
+        .where("pricePerMonth")
+        .gt(priceMin - 1)
+        .lt(priceMax + 1)
+        .where("floorSize")
+        .gt(floorSizeMin - 1)
+        .lt(floorSizeMax + 1)
+        .where("rooms")
+        .gt(roomsMin - 1)
+        .lt(roomsMax + 1)
+        .lean();
+
+      const totalApartments = await Apartment.find()
+        .where("pricePerMonth")
+        .gt(priceMin - 1)
+        .lt(priceMax + 1)
+        .where("floorSize")
+        .gt(floorSizeMin - 1)
+        .lt(floorSizeMax + 1)
+        .where("rooms")
+        .gt(roomsMin - 1)
+        .lt(roomsMax + 1)
+        .lean();
+
+      const totalCount = totalApartments.length;
+      res.send({ apartments, totalCount });
+    } else {
+      const apartments = await Apartment.find()
+        .where("pricePerMonth")
+        .gt(priceMin - 1)
+        .lt(priceMax + 1)
+        .where("floorSize")
+        .gt(floorSizeMin - 1)
+        .lt(floorSizeMax + 1)
+        .where("rooms")
+        .gt(roomsMin - 1)
+        .lt(roomsMax + 1)
+        .where("rentable")
+        .equals(true)
+        .lean();
+
+      const totalApartments = await Apartment.find()
+        .where("pricePerMonth")
+        .gt(priceMin - 1)
+        .lt(priceMax + 1)
+        .where("floorSize")
+        .gt(floorSizeMin - 1)
+        .lt(floorSizeMax + 1)
+        .where("rooms")
+        .gt(roomsMin - 1)
+        .lt(roomsMax + 1)
+        .where("rentable")
+        .equals(true)
+        .lean();
+
+      const totalCount = totalApartments.length;
+      res.send({ apartments, totalCount });
+    }
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   getApartments,
   addApartment,
   updateApartment,
   deleteApartment,
+  getTotalApartments,
 };
