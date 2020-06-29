@@ -6,7 +6,17 @@ import {
   requestFailed,
 } from "../../helper/request";
 import apiCall from "../../helper/apiCall";
-import { GET_APARTMENTS } from "../actionTypes";
+import { GET_APARTMENTS, ADD_APARTMENT } from "../actionTypes";
+
+export function* addApartmentSaga(action) {
+  try {
+    yield put({ type: requestPending(ADD_APARTMENT) });
+    yield call(apiCall, "/apartments", "POST", action.payload, true);
+    yield put({ type: requestSuccess(ADD_APARTMENT) });
+  } catch (error) {
+    yield put({ type: requestFailed(ADD_APARTMENT), payload: error.response });
+  }
+}
 
 export function* getApartmentsSaga(action) {
   try {
@@ -44,7 +54,6 @@ export function* getApartmentsSaga(action) {
     } else {
       yield put(push("/main"));
     }
-    console.log("action paylaod", action.payload);
   } catch (error) {
     yield put({ type: requestFailed(GET_APARTMENTS), payload: error.response });
   }

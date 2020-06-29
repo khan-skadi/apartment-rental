@@ -3,12 +3,13 @@ import {
   SIGNUP,
   LOGIN,
   LOGOUT,
+  ADD_APARTMENT,
   GET_APARTMENTS,
   GET_REALTORS,
 } from "../actionTypes";
 
 import { signupSaga, loginSaga, logoutSaga } from "./auth";
-import { getApartmentsSaga } from "./apartment";
+import { addApartmentSaga, getApartmentsSaga } from "./apartment";
 import { getRealtorsSaga } from "./users";
 
 export default function* rootSaga() {
@@ -16,6 +17,7 @@ export default function* rootSaga() {
     takeEvery(SIGNUP, signupSaga),
     takeEvery(LOGIN, loginSaga),
     takeEvery(GET_REALTORS, getRealtorsSaga),
+    takeEvery(ADD_APARTMENT, addApartmentSaga),
     takeEvery(GET_APARTMENTS, getApartmentsSaga),
     takeEvery(LOGOUT, logoutSaga),
   ]);

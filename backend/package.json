@@ -20,6 +20,7 @@
     "mongoose": "^5.9.19",
     "mongoose-unique-validator": "^2.0.3",
     "morgan": "~1.9.1",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "react-geocode": "^0.2.1"
   }
 }

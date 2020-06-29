@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller, ErrorMessage } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from "@material-ui/core/Avatar";
@@ -13,31 +13,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
+import ApartmentMap from "../../components/ApartmentMap";
 import * as actions from "../../../store/actions";
 
-const top100Films = [
-  { title: "The Shawshank Redemption", year: 1994 },
-  { title: "The Godfather", year: 1972 },
-  { title: "The Godfather: Part II", year: 1974 },
-  { title: "The Dark Knight", year: 2008 },
-  { title: "12 Angry Men", year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: "Pulp Fiction", year: 1994 },
-  { title: "The Lord of the Rings: The Return of the King", year: 2003 },
-  { title: "The Good, the Bad and the Ugly", year: 1966 },
-  { title: "Fight Club", year: 1999 },
-  { title: "The Lord of the Rings: The Fellowship of the Ring", year: 2001 },
-  { title: "Star Wars: Episode V - The Empire Strikes Back", year: 1980 },
-  { title: "Forrest Gump", year: 1994 },
-  { title: "Inception", year: 2010 },
-  { title: "The Lord of the Rings: The Two Towers", year: 2002 },
-  { title: "One Flew Over the Cuckoo's Nest", year: 1975 },
-  { title: "Goodfellas", year: 1990 },
-  { title: "The Matrix", year: 1999 },
-  { title: "Seven Samurai", year: 1954 },
-  { title: "Star Wars: Episode IV - A New Hope", year: 1977 },
-  { title: "City of God", year: 2002 },
-];
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -61,11 +39,18 @@ const useStyles = makeStyles((theme) => ({
 export default function AddApartment() {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { handleSubmit, control, errors } = useForm();
+  const { handleSubmit, control, errors, setValue } = useForm();
+  const [realtorId, setRealtorId] = useState("null");
+  const [lat, setLat] = useState(41.608635);
+  const [lng, setLng] = useState(21.745275);
+  const [center, setCenter] = useState({ lat, lng });
 
   useEffect(() => {
     dispatch(actions.getRealtors());
-  }, []);
+    setValue("lat", lat);
+    setValue("lng", lng);
+    setCenter({ lat, lng });
+  }, [lat, lng]);
 
   const realtors = useSelector((state) => {
     const { realtorsInfo } = state.user;
@@ -74,7 +59,35 @@ export default function AddApartment() {
   });
 
   const onSubmit = (data) => {
-    // dispatch(actions.signup(data));
+    console.log("-------------", data);
+    console.log("-------------", realtorId);
+    dispatch(actions.addApartment({ ...data, realtor: realtorId }));
+  };
+
+  const handleLatChange = ([event]) => {
+    let latitude = parseFloat(event.target.value);
+    if (latitude <= 90 && latitude >= -90) {
+      setLat(latitude);
+    }
+  };
+
+  const handleLngChange = ([event]) => {
+    let longitude = parseFloat(event.target.value);
+    if (longitude <= 180 && longitude >= -180) {
+      setLng(longitude);
+    }
+  };
+
+  const handleRealtorChange = (event, values) => {
+    values && setRealtorId(values._id);
+  };
+
+  const handleSearchBoxChange = (lat, lng) => {
+    if (lat) {
+      setValue("lat", lat);
+      setValue("lng", lng);
+      setCenter({ lat, lng });
+    }
   };
 
   return (
@@ -99,7 +112,9 @@ export default function AddApartment() {
                       autoComplete="name"
                       name="name"
                       variant="outlined"
-                      rules={{ required: "Name field is required" }}
+                      rules={{
+                        required: "Name field is required",
+                      }}
                       fullWidth
                       id="name"
                       label="Name"
@@ -109,6 +124,66 @@ export default function AddApartment() {
                       errors={errors}
                       as={<Typography color="error"></Typography>}
                       name="name"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Controller
+                      as={TextField}
+                      control={control}
+                      name="lat"
+                      variant="outlined"
+                      fullWidth
+                      label="Latitude"
+                      placeholder="Between -90 and 90"
+                      type="number"
+                      rules={{
+                        required: "Latitude field is required",
+                        min: {
+                          value: -90,
+                          message: "Latitude should be bigger than -90",
+                        },
+                        max: {
+                          value: 90,
+                          message: "Latitude should be smaller than 90",
+                        },
+                      }}
+                      id="lat"
+                      onChange={handleLatChange}
+                    />
+                    <ErrorMessage
+                      errors={errors}
+                      as={<Typography color="error"></Typography>}
+                      name="lat"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Controller
+                      as={TextField}
+                      control={control}
+                      name="lng"
+                      variant="outlined"
+                      placeholder="Between -180 and 180"
+                      type="number"
+                      rules={{
+                        required: "Longitude field is required",
+                        min: {
+                          value: -90,
+                          message: "Longitude should be bigger than -180",
+                        },
+                        max: {
+                          value: 90,
+                          message: "Longitude should be smaller than 180",
+                        },
+                      }}
+                      fullWidth
+                      id="lng"
+                      label="Longitude"
+                      onChange={handleLngChange}
+                    />
+                    <ErrorMessage
+                      errors={errors}
+                      as={<Typography color="error"></Typography>}
+                      name="lng"
                     />
                   </Grid>
                   <Grid item xs={12} sm={12}>
@@ -187,44 +262,28 @@ export default function AddApartment() {
                     />
                   </Grid>
                   <Grid item xs={12} sm={12}>
-                    <Controller
-                      as={
-                        <Autocomplete
-                          freeSolo
-                          id="free-solo-2-demo"
-                          disableClearable
-                          options={realtors.map(
-                            (option) =>
-                              `${option.firstName} ${option.lastName}`
-                          )}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Search input"
-                              margin="normal"
-                              variant="outlined"
-                              InputProps={{
-                                ...params.InputProps,
-                                type: "search",
-                              }}
-                            />
-                          )}
-                        />
+                    <Autocomplete
+                      freeSolo
+                      id="free-solo-2-demo"
+                      disableClearable
+                      options={realtors && realtors}
+                      getOptionLabel={(option) =>
+                        `${option.firstName} ${option.lastName}`
                       }
-                      control={control}
-                      autoComplete="realtor"
-                      name="realtor"
-                      variant="outlined"
-                      rules={{ required: "Realtor field is required" }}
-                      fullWidth
-                      id="realtor"
-                      label="Realtor"
-                      autoFocus
-                    />
-                    <ErrorMessage
-                      errors={errors}
-                      as={<Typography color="error"></Typography>}
-                      name="realtor"
+                      onChange={handleRealtorChange}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Realtor"
+                          required
+                          margin="normal"
+                          variant="outlined"
+                          InputProps={{
+                            ...params.InputProps,
+                            type: "search",
+                          }}
+                        />
+                      )}
                     />
                   </Grid>
                 </Grid>
@@ -249,7 +308,11 @@ export default function AddApartment() {
           </Container>
         </Grid>
         <Grid item xs={12} sm={6}>
-          {/* <Map className={classes.map} /> */}
+          <ApartmentMap
+            center={center}
+            placeholder="Please find a location to add an Apartment"
+            searchBoxChange={handleSearchBoxChange}
+          />
         </Grid>
       </Grid>
     </div>
