@@ -12,99 +12,94 @@ function formatSort(order, orderBy) {
 
 async function getApartments(req, res, next) {
   const user = req.user;
-  if (isAdminOrRealtor(user.role)) {
-    try {
-      let {
-        currentPage,
-        rowsCount,
-        order,
-        orderBy,
-        priceMin,
-        priceMax,
-        floorSizeMin,
-        floorSizeMax,
-        roomsMin,
-        roomsMax,
-        realtorAccess,
-      } = req.query;
+  try {
+    let {
+      currentPage,
+      rowsCount,
+      order,
+      orderBy,
+      priceMin,
+      priceMax,
+      floorSizeMin,
+      floorSizeMax,
+      roomsMin,
+      roomsMax,
+    } = req.query;
 
-      priceMin = parseInt(priceMin);
-      priceMax = parseInt(priceMax);
-      floorSizeMin = parseInt(floorSizeMin);
-      floorSizeMax = parseInt(floorSizeMax);
-      roomsMin = parseInt(roomsMin);
-      roomsMax = parseInt(roomsMax);
+    priceMin = parseInt(priceMin);
+    priceMax = parseInt(priceMax);
+    floorSizeMin = parseInt(floorSizeMin);
+    floorSizeMax = parseInt(floorSizeMax);
+    roomsMin = parseInt(roomsMin);
+    roomsMax = parseInt(roomsMax);
 
-      if (realtorAccess) {
-        const apartments = await Apartment.find()
-          .where("pricePerMonth")
-          .gt(priceMin - 1)
-          .lt(priceMax + 1)
-          .where("floorSize")
-          .gt(floorSizeMin - 1)
-          .lt(floorSizeMax + 1)
-          .where("rooms")
-          .gt(roomsMin - 1)
-          .lt(roomsMax + 1)
-          .sort(formatSort(order, orderBy))
-          .skip(parseInt(currentPage) * parseInt(rowsCount))
-          .limit(parseInt(rowsCount))
-          .lean();
+    if (isAdminOrRealtor(user.role)) {
+      const apartments = await Apartment.find()
+        .where("pricePerMonth")
+        .gt(priceMin - 1)
+        .lt(priceMax + 1)
+        .where("floorSize")
+        .gt(floorSizeMin - 1)
+        .lt(floorSizeMax + 1)
+        .where("rooms")
+        .gt(roomsMin - 1)
+        .lt(roomsMax + 1)
+        .sort(formatSort(order, orderBy))
+        .skip(parseInt(currentPage) * parseInt(rowsCount))
+        .limit(parseInt(rowsCount))
+        .lean();
 
-        const totalApartments = await await Apartment.find()
-          .where("pricePerMonth")
-          .gt(priceMin - 1)
-          .lt(priceMax + 1)
-          .where("floorSize")
-          .gt(floorSizeMin - 1)
-          .lt(floorSizeMax + 1)
-          .where("rooms")
-          .gt(roomsMin - 1)
-          .lt(roomsMax + 1)
-          .lean();
+      const totalApartments = await Apartment.find()
+        .where("pricePerMonth")
+        .gt(priceMin - 1)
+        .lt(priceMax + 1)
+        .where("floorSize")
+        .gt(floorSizeMin - 1)
+        .lt(floorSizeMax + 1)
+        .where("rooms")
+        .gt(roomsMin - 1)
+        .lt(roomsMax + 1)
+        .lean();
 
-        const totalCount = totalApartments.length;
-        res.send({ apartments, totalCount });
-      } else {
-        const apartments = await Apartment.find()
-          .where("pricePerMonth")
-          .gt(priceMin - 1)
-          .lt(priceMax + 1)
-          .where("floorSize")
-          .gt(floorSizeMin - 1)
-          .lt(floorSizeMax + 1)
-          .where("rooms")
-          .gt(roomsMin - 1)
-          .lt(roomsMax + 1)
-          .where("rentable")
-          .equals(true)
-          .sort(formatSort(order, orderBy))
-          .skip(parseInt(currentPage) * parseInt(rowsCount))
-          .limit(parseInt(rowsCount))
-          .lean();
+      const totalCount = totalApartments.length;
+      res.send({ apartments, totalCount });
+    } else {
+      const apartments = await Apartment.find()
+        .where("pricePerMonth")
+        .gt(priceMin - 1)
+        .lt(priceMax + 1)
+        .where("floorSize")
+        .gt(floorSizeMin - 1)
+        .lt(floorSizeMax + 1)
+        .where("rooms")
+        .gt(roomsMin - 1)
+        .lt(roomsMax + 1)
+        .where("rentable")
+        .equals(true)
+        .sort(formatSort(order, orderBy))
+        .skip(parseInt(currentPage) * parseInt(rowsCount))
+        .limit(parseInt(rowsCount))
+        .lean();
 
-        const totalApartments = await await Apartment.find()
-          .where("pricePerMonth")
-          .gt(priceMin - 1)
-          .lt(priceMax + 1)
-          .where("floorSize")
-          .gt(floorSizeMin - 1)
-          .lt(floorSizeMax + 1)
-          .where("rooms")
-          .gt(roomsMin - 1)
-          .lt(roomsMax + 1)
-          .where("rentable")
-          .equals(true)
-          .lean();
+      const totalApartments = await Apartment.find()
+        .where("pricePerMonth")
+        .gt(priceMin - 1)
+        .lt(priceMax + 1)
+        .where("floorSize")
+        .gt(floorSizeMin - 1)
+        .lt(floorSizeMax + 1)
+        .where("rooms")
+        .gt(roomsMin - 1)
+        .lt(roomsMax + 1)
+        .where("rentable")
+        .equals(true)
+        .lean();
 
-        const totalCount = totalApartments.length;
-        res.send({ apartments, totalCount });
-      }
-    } catch (err) {
-      next(err);
+      const totalCount = totalApartments.length;
+      res.send({ apartments, totalCount });
     }
-  } else {
-    res.status(401).send("This user doesn't have permission to get apartments");
+  } catch (err) {
+    next(err);
   }
 }
 
@@ -120,6 +115,7 @@ async function addApartment(req, res, next) {
         lng: req.body.lng,
         realtor: req.body.realtor,
         rooms: req.body.rooms,
+        location: req.body.location,
       });
 
       const createdApartment = await apartment.save();
@@ -152,6 +148,7 @@ async function updateApartment(req, res, next) {
       apartment.realtor = req.body.realtor || apartment.realtor;
       apartment.rentable = req.body.rentable || apartment.rentable;
       apartment.rooms = req.body.rooms || apartment.rooms;
+      apartment.location = req.body.location || apartment.location;
 
       try {
         const updatedApartment = await apartment.save();

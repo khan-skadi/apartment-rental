@@ -128,7 +128,7 @@ const RealtorTableToolbar = (props) => {
   const dispatch = useDispatch();
   const classes = useToolbarStyles();
   const [priceValue, setPriceValue] = React.useState([1, 10000]);
-  const [floorSizeValue, setFloorSizeValue] = React.useState([100, 10000]);
+  const [floorSizeValue, setFloorSizeValue] = React.useState([1, 10000]);
   const [roomsValue, setRoomsValue] = React.useState([1, 10]);
 
   const { pageInfo } = props;
@@ -144,7 +144,7 @@ const RealtorTableToolbar = (props) => {
     dispatch(
       actions.setApartmentsFilter({ priceValue, floorSizeValue, roomsValue })
     );
-    dispatch(actions.getApartments({ ...pageInfo, realtorAccess: true }));
+    dispatch(actions.getApartments({ ...pageInfo }));
   };
 
   // handle Floor Size Change
@@ -156,7 +156,7 @@ const RealtorTableToolbar = (props) => {
     dispatch(
       actions.setApartmentsFilter({ priceValue, floorSizeValue, roomsValue })
     );
-    dispatch(actions.getApartments({ ...pageInfo, realtorAccess: true }));
+    dispatch(actions.getApartments({ ...pageInfo }));
   };
 
   // handle Rooms Number Change
@@ -168,7 +168,7 @@ const RealtorTableToolbar = (props) => {
     dispatch(
       actions.setApartmentsFilter({ priceValue, floorSizeValue, roomsValue })
     );
-    dispatch(actions.getApartments({ ...pageInfo, realtorAccess: true }));
+    dispatch(actions.getApartments({ ...pageInfo }));
   };
 
   return (
@@ -252,7 +252,7 @@ const RealtorTableToolbar = (props) => {
             valueLabelDisplay="auto"
             aria-labelledby="range-slider"
             max={10000}
-            min={100}
+            min={1}
             step={1000}
             marks={true}
           />
@@ -299,7 +299,7 @@ export default function RealtorTable() {
   const dispatch = useDispatch();
   useEffect(() => {
     const priceValue = [1, 10000];
-    const floorSizeValue = [100, 10000];
+    const floorSizeValue = [1, 10000];
     const roomsValue = [1, 10];
     dispatch(
       actions.setApartmentsFilter({ priceValue, floorSizeValue, roomsValue })
@@ -310,7 +310,6 @@ export default function RealtorTable() {
         orderBy,
         rowsPerPage,
         page,
-        realtorAccess: true,
       })
     );
   }, [order, orderBy, page, rowsPerPage]);

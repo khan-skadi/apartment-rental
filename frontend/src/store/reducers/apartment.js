@@ -12,7 +12,7 @@ const initialState = {
   apartmentsInfo: [],
   apartmentsFilter: {
     priceValue: [1, 10000],
-    floorSizeValue: [100, 10000],
+    floorSizeValue: [1, 10000],
     roomsValue: [1, 10],
   },
 };

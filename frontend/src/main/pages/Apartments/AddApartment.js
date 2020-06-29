@@ -12,6 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import Geocode from "react-geocode";
 
 import ApartmentMap from "../../components/ApartmentMap";
 import * as actions from "../../../store/actions";
@@ -59,9 +60,24 @@ export default function AddApartment() {
   });
 
   const onSubmit = (data) => {
-    console.log("-------------", data);
-    console.log("-------------", realtorId);
-    dispatch(actions.addApartment({ ...data, realtor: realtorId }));
+    Geocode.setApiKey(process.env.REACT_APP_MAP_KEY);
+    Geocode.setLanguage("en");
+    Geocode.enableDebug();
+    Geocode.fromLatLng(data.lat, data.lng).then(
+      (response) => {
+        const address = response.results[0].formatted_address;
+        dispatch(
+          actions.addApartment({
+            ...data,
+            realtor: realtorId,
+            location: address,
+          })
+        );
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
   };
 
   const handleLatChange = ([event]) => {

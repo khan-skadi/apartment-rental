@@ -124,7 +124,7 @@ const ApartmentsTableToolbar = (props) => {
   const dispatch = useDispatch();
   const classes = useToolbarStyles();
   const [priceValue, setPriceValue] = React.useState([1, 10000]);
-  const [floorSizeValue, setFloorSizeValue] = React.useState([100, 10000]);
+  const [floorSizeValue, setFloorSizeValue] = React.useState([1, 10000]);
   const [roomsValue, setRoomsValue] = React.useState([1, 10]);
 
   const { pageInfo } = props;
@@ -236,7 +236,7 @@ const ApartmentsTableToolbar = (props) => {
             valueLabelDisplay="auto"
             aria-labelledby="range-slider"
             max={10000}
-            min={100}
+            min={1}
             step={1000}
             marks={true}
           />
@@ -283,7 +283,7 @@ export default function ApartmentsTable() {
   const dispatch = useDispatch();
   useEffect(() => {
     const priceValue = [1, 10000];
-    const floorSizeValue = [100, 10000];
+    const floorSizeValue = [1, 10000];
     const roomsValue = [1, 10];
     dispatch(
       actions.setApartmentsFilter({ priceValue, floorSizeValue, roomsValue })

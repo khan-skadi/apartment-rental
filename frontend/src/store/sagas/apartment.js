@@ -29,7 +29,7 @@ export function* getApartmentsSaga(action) {
 
     yield put({ type: requestPending(GET_APARTMENTS) });
 
-    const { order, orderBy, rowsPerPage, page, realtorAccess } = action.payload;
+    const { order, orderBy, rowsPerPage, page } = action.payload;
     const response = yield call(apiCall, "/apartments/", "GET", null, true, {
       order,
       orderBy,
@@ -41,19 +41,12 @@ export function* getApartmentsSaga(action) {
       floorSizeMax: floorSizeValue[1],
       roomsMin: roomsValue[0],
       roomsMax: roomsValue[1],
-      realtorAccess,
     });
 
     yield put({
       type: requestSuccess(GET_APARTMENTS),
       payload: response.data,
     });
-
-    if (action.payload.realtorAccess === true) {
-      yield put(push("/apartments"));
-    } else {
-      yield put(push("/main"));
-    }
   } catch (error) {
     yield put({ type: requestFailed(GET_APARTMENTS), payload: error.response });
   }
