@@ -290,8 +290,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function RealtorTable() {
   const classes = useStyles();
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("name");
+  const [order, setOrder] = React.useState("desc");
+  const [orderBy, setOrderBy] = React.useState("created");
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -372,7 +372,10 @@ export default function RealtorTable() {
                         {row.pricePerMonth && row.pricePerMonth.$numberDecimal}
                       </TableCell>
                       <TableCell align="right">{row.rooms}</TableCell>
-                      <TableCell align="left">{row.realtor}</TableCell>
+                      <TableCell align="left">
+                        {row.realtor &&
+                          `${row.realtor.firstName} ${row.realtor.lastName}`}
+                      </TableCell>
                     </TableRow>
                   );
                 })}

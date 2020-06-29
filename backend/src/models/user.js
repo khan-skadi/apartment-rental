@@ -23,6 +23,12 @@ const userSchema = new Schema({
     default: "client",
     trim: true,
   },
+  created: {
+    autoCreate: true,
+    type: Date,
+    default: new Date(),
+    required: true,
+  },
 });
 
 userSchema.methods.hashPassword = function hashPassword(password) {

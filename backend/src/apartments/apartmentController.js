@@ -44,6 +44,7 @@ async function getApartments(req, res, next) {
         .where("rooms")
         .gt(roomsMin - 1)
         .lt(roomsMax + 1)
+        .populate("realtor")
         .sort(formatSort(order, orderBy))
         .skip(parseInt(currentPage) * parseInt(rowsCount))
         .limit(parseInt(rowsCount))

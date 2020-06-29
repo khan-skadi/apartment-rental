@@ -13,6 +13,7 @@ export function* addApartmentSaga(action) {
     yield put({ type: requestPending(ADD_APARTMENT) });
     yield call(apiCall, "/apartments", "POST", action.payload, true);
     yield put({ type: requestSuccess(ADD_APARTMENT) });
+    yield put(push("/apartments"));
   } catch (error) {
     yield put({ type: requestFailed(ADD_APARTMENT), payload: error.response });
   }
