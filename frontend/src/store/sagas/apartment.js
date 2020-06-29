@@ -6,7 +6,12 @@ import {
   requestFailed,
 } from "../../helper/request";
 import apiCall from "../../helper/apiCall";
-import { GET_APARTMENTS, ADD_APARTMENT } from "../actionTypes";
+import {
+  GET_APARTMENTS,
+  ADD_APARTMENT,
+  UPDATE_APARTMENT,
+  DELETE_APARTMENT,
+} from "../actionTypes";
 
 export function* addApartmentSaga(action) {
   try {
@@ -16,6 +21,72 @@ export function* addApartmentSaga(action) {
     yield put(push("/apartments"));
   } catch (error) {
     yield put({ type: requestFailed(ADD_APARTMENT), payload: error.response });
+  }
+}
+
+export function* updateApartmentSaga(action) {
+  try {
+    yield put({ type: requestPending(UPDATE_APARTMENT) });
+    yield call(
+      apiCall,
+      `/apartments/${action.payload._id}`,
+      "PUT",
+      action.payload,
+      true
+    );
+    yield put({ type: requestSuccess(UPDATE_APARTMENT) });
+    yield put(push("/apartments"));
+  } catch (error) {
+    yield put({
+      type: requestFailed(UPDATE_APARTMENT),
+      payload: error.response,
+    });
+  }
+}
+
+export function* deleteApartmentSaga(action) {
+  try {
+    const state = yield select();
+    const {
+      priceValue,
+      floorSizeValue,
+      roomsValue,
+    } = state.apartment.apartmentsFilter;
+
+    yield put({ type: requestPending(DELETE_APARTMENT) });
+    yield call(
+      apiCall,
+      `/apartments/${action.payload.id}`,
+      "DELETE",
+      null,
+      true
+    );
+    yield put({ type: requestSuccess(DELETE_APARTMENT) });
+
+    const response = yield call(apiCall, "/apartments/", "GET", null, true, {
+      order: "desc",
+      orderBy: "created",
+      rowsCount: 5,
+      currentPage: 0,
+      priceMin: priceValue[0],
+      priceMax: priceValue[1],
+      floorSizeMin: floorSizeValue[0],
+      floorSizeMax: floorSizeValue[1],
+      roomsMin: roomsValue[0],
+      roomsMax: roomsValue[1],
+    });
+
+    yield put({
+      type: requestSuccess(GET_APARTMENTS),
+      payload: response.data,
+    });
+
+    yield put(push("/apartments"));
+  } catch (error) {
+    yield put({
+      type: requestFailed(DELETE_APARTMENT),
+      payload: error.response,
+    });
   }
 }
 

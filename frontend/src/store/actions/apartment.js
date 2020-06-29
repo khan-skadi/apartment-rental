@@ -4,6 +4,7 @@ import {
   UPDATE_APARTMENT,
   DELETE_APARTMENT,
   SET_APARTMENTS_FILTER,
+  SAVE_EDIT_APARTMENT,
 } from "../actionTypes";
 
 export const addApartment = (payload) => {
@@ -24,4 +25,8 @@ export const deleteApartment = (payload) => {
 
 export const setApartmentsFilter = (payload) => {
   return { type: SET_APARTMENTS_FILTER, payload };
+};
+
+export const saveEditApartment = (payload) => {
+  return { type: SAVE_EDIT_APARTMENT, payload };
 };

@@ -7,6 +7,7 @@ import Rent from "./pages/Rent";
 import Users from "./pages/Users";
 import Apartments from "./pages/Apartments";
 import AddApartment from "./pages/Apartments/AddApartment";
+import EditApartment from "./pages/Apartments/EditApartment";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
@@ -25,6 +26,9 @@ const Main = (props) => {
         {me && <Route exact path="/apartments" component={Apartments}></Route>}
         {me && (
           <Route exact path="/apartment/add" component={AddApartment}></Route>
+        )}
+        {me && (
+          <Route exact path="/apartment/:id" component={EditApartment}></Route>
         )}
         <Route path="*" render={() => <Redirect to="/" />} />
       </Switch>

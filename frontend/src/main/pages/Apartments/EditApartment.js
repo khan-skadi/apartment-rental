@@ -5,6 +5,7 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
+import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
@@ -15,7 +16,6 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
-
 import Geocode from "react-geocode";
 
 import ApartmentMap from "../../components/ApartmentMap";
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddApartment() {
+export default function EditApartment() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { handleSubmit, control, errors, setValue } = useForm();
@@ -54,10 +54,35 @@ export default function AddApartment() {
   const [lat, setLat] = useState(41.608635);
   const [lng, setLng] = useState(21.745275);
   const [center, setCenter] = useState({ lat, lng });
-  const [rentable, setRentable] = useState(true);
+  const { apartment } = useSelector((state) => state.apartment);
+  const [rentStatus, setRentStatus] = useState(true);
 
   useEffect(() => {
     dispatch(actions.getRealtors());
+    if (apartment) {
+      const {
+        name,
+        description,
+        lat,
+        lng,
+        floorSize,
+        rooms,
+        pricePerMonth,
+        rentable,
+        realtor,
+      } = apartment;
+      setRealtorId(realtor._id);
+      setValue("name", name);
+      setValue("description", description);
+      setValue("floor_size", floorSize.$numberDecimal);
+      setValue("rooms", rooms);
+      setValue("price", pricePerMonth.$numberDecimal);
+      setValue("lat", lat.$numberDecimal);
+      setValue("lng", lng.$numberDecimal);
+    }
+  }, []);
+
+  useEffect(() => {
     setValue("lat", lat);
     setValue("lng", lng);
     setCenter({ lat, lng });
@@ -77,11 +102,12 @@ export default function AddApartment() {
       (response) => {
         const address = response.results[0].formatted_address;
         dispatch(
-          actions.addApartment({
+          actions.updateApartment({
             ...data,
+            _id: apartment._id,
             realtor: realtorId,
             location: address,
-            rentable,
+            rentable: rentStatus,
           })
         );
       },
@@ -118,7 +144,7 @@ export default function AddApartment() {
   };
 
   const hanldeRentableChange = (event) => {
-    setRentable(event.target.value);
+    setRentStatus(event.target.value);
   };
 
   return (
@@ -132,7 +158,7 @@ export default function AddApartment() {
                 <LockOutlinedIcon />
               </Avatar>
               <Typography component="h1" variant="h5">
-                Add Apartment
+                Edit Apartment
               </Typography>
               <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
                 <Grid container spacing={2}>
@@ -303,7 +329,7 @@ export default function AddApartment() {
                       <Select
                         labelId="demo-simple-select-outlined-label"
                         id="demo-simple-select-outlined"
-                        value={rentable}
+                        defaultValue={apartment.rentable}
                         onChange={hanldeRentableChange}
                         label="Rentable Status"
                       >
@@ -335,6 +361,10 @@ export default function AddApartment() {
                           }}
                         />
                       )}
+                      defaultValue={{
+                        firstName: apartment && apartment.realtor.firstName,
+                        lastName: apartment && apartment.realtor.lastName,
+                      }}
                     />
                   </Grid>
                 </Grid>
@@ -345,7 +375,7 @@ export default function AddApartment() {
                   color="primary"
                   className={classes.submit}
                 >
-                  Add Apartment
+                  Edit Apartment
                 </Button>
               </form>
             </div>

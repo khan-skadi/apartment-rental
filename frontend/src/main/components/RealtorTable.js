@@ -1,4 +1,5 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { lighten, makeStyles } from "@material-ui/core/styles";
@@ -21,6 +22,12 @@ import { NavLink } from "react-router-dom";
 import MenuItem from "@material-ui/core/MenuItem";
 import IconButton from "@material-ui/core/IconButton";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 import * as actions from "../../store/actions";
 
@@ -31,40 +38,52 @@ function createData(name, location, decription, floor_size, price, realtor) {
 const headCells = [
   {
     id: "name",
-    numeric: false,
+    align: "left",
     disablePadding: false,
     label: "Name",
   },
   { id: "location", numeric: false, disablePadding: false, label: "Location" },
   {
     id: "description",
-    numeric: false,
+    align: "left",
     disablePadding: false,
     label: "Description",
   },
   {
     id: "floorSize",
-    numeric: true,
+    align: "right",
     disablePadding: false,
     label: "Floor Size",
   },
   {
     id: "pricePerMonth",
-    numeric: true,
+    align: "right",
     disablePadding: false,
     label: "Price per month",
   },
   {
     id: "rooms",
-    numeric: true,
+    align: "right",
     disablePadding: false,
     label: "Rooms",
   },
   {
     id: "realtor",
-    numeric: false,
+    align: "left",
     disablePadding: false,
     label: "Realtor",
+  },
+  {
+    id: "rentable",
+    align: "left",
+    disablePadding: false,
+    label: "Rentable",
+  },
+  {
+    id: "actions",
+    align: "center",
+    disablePadding: false,
+    label: "Action",
   },
 ];
 
@@ -80,22 +99,28 @@ function RealtorTableHead(props) {
         {headCells.map((headCell, idx) => (
           <TableCell
             key={idx}
-            align={headCell.numeric ? "right" : "left"}
+            align={headCell.align}
             padding={headCell.disablePadding ? "none" : "default"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : "asc"}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </span>
-              ) : null}
-            </TableSortLabel>
+            {headCell.id !== "actions" ? (
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={orderBy === headCell.id ? order : "asc"}
+                onClick={createSortHandler(headCell.id)}
+              >
+                {headCell.label}
+                {orderBy === headCell.id ? (
+                  <span className={classes.visuallyHidden}>
+                    {order === "desc"
+                      ? "sorted descending"
+                      : "sorted ascending"}
+                  </span>
+                ) : null}
+              </TableSortLabel>
+            ) : (
+              headCell.label
+            )}
           </TableCell>
         ))}
       </TableRow>
@@ -286,15 +311,27 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
+  actionButtons: {
+    margin: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 2, 2),
+  },
+  cancel: {
+    margin: theme.spacing(3, 2, 2),
+  },
 }));
 
 export default function RealtorTable() {
+  const history = useHistory();
   const classes = useStyles();
   const [order, setOrder] = React.useState("desc");
   const [orderBy, setOrderBy] = React.useState("created");
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [apartmentDeleteId, setApartmentDeleteId] = useState(null);
+  const [openDelete, setOpenDelete] = useState(false);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -334,6 +371,30 @@ export default function RealtorTable() {
 
   const handleChangeDense = (event) => {
     setDense(event.target.checked);
+  };
+
+  const handleEdit = (row) => {
+    console.log("row", row);
+    dispatch(actions.saveEditApartment(row));
+    history.push(`/apartment/${row._id}`);
+  };
+
+  const handleDelete = () => {
+    dispatch(actions.deleteApartment({ id: apartmentDeleteId }));
+    setPage(0);
+    setOrder("desc");
+    setOrderBy("created");
+    setRowsPerPage(5);
+    setOpenDelete(false);
+  };
+
+  const showDeleteDiaglog = (id) => {
+    setApartmentDeleteId(id);
+    setOpenDelete(true);
+  };
+
+  const handleDeleteClose = () => {
+    setOpenDelete(false);
   };
 
   return (
@@ -376,6 +437,28 @@ export default function RealtorTable() {
                         {row.realtor &&
                           `${row.realtor.firstName} ${row.realtor.lastName}`}
                       </TableCell>
+                      <TableCell align="left">
+                        {row.rentable ? "Rentable" : "Rent"}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button
+                          className={classes.actionButtons}
+                          variant="outlined"
+                          color="primary"
+                          onClick={() => handleEdit(row)}
+                        >
+                          Edit
+                        </Button>
+
+                        <Button
+                          className={classes.actionButtons}
+                          variant="outlined"
+                          color="secondary"
+                          onClick={() => showDeleteDiaglog(row._id)}
+                        >
+                          Delete
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   );
                 })}
@@ -396,6 +479,39 @@ export default function RealtorTable() {
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
       />
+
+      <Dialog
+        open={openDelete}
+        onClose={handleDeleteClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Delete Apartment</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Do you want to delete this apartment?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleDeleteClose}
+            variant="contained"
+            color="default"
+            className={classes.cancel}
+          >
+            No
+          </Button>
+          <Button
+            onClick={handleDelete}
+            variant="contained"
+            color="secondary"
+            autoFocus
+            className={classes.submit}
+          >
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

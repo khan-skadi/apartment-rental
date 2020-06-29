@@ -125,7 +125,6 @@ async function getRealtors(req, res, next) {
     try {
       // all realtors and admins except the request user
       const users = await User.find({
-        _id: { $ne: user._id },
         role: { $ne: "client" },
       }).lean();
       res.send({ users });

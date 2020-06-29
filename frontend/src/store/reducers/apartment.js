@@ -1,4 +1,8 @@
-import { GET_APARTMENTS, SET_APARTMENTS_FILTER } from "../actionTypes";
+import {
+  GET_APARTMENTS,
+  SET_APARTMENTS_FILTER,
+  SAVE_EDIT_APARTMENT,
+} from "../actionTypes";
 import {
   requestPending,
   requestSuccess,
@@ -15,6 +19,7 @@ const initialState = {
     floorSizeValue: [1, 10000],
     roomsValue: [1, 10],
   },
+  apartment: null,
 };
 
 export const apartmentReducer = function (state = initialState, action) {
@@ -23,6 +28,12 @@ export const apartmentReducer = function (state = initialState, action) {
       return {
         ...state,
         apartmentsFilter: action.payload,
+      };
+    }
+    case SAVE_EDIT_APARTMENT: {
+      return {
+        ...state,
+        apartment: action.payload,
       };
     }
     case requestPending(GET_APARTMENTS): {

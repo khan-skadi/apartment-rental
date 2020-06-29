@@ -117,6 +117,7 @@ async function addApartment(req, res, next) {
         realtor: req.body.realtor,
         rooms: req.body.rooms,
         location: req.body.location,
+        rentable: req.body.rentable,
       });
 
       const createdApartment = await apartment.save();
@@ -147,7 +148,7 @@ async function updateApartment(req, res, next) {
       apartment.lat = req.body.lat || apartment.lat;
       apartment.lng = req.body.lng || apartment.lng;
       apartment.realtor = req.body.realtor || apartment.realtor;
-      apartment.rentable = req.body.rentable || apartment.rentable;
+      apartment.rentable = req.body.rentable ? true : false;
       apartment.rooms = req.body.rooms || apartment.rooms;
       apartment.location = req.body.location || apartment.location;
 
