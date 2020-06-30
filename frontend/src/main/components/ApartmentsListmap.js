@@ -32,7 +32,6 @@ function ApartmentsListMap(props) {
     const { geometry } = autoComplete.getPlace();
     const lat = geometry && geometry.location.lat();
     const lng = geometry && geometry.location.lng();
-    console.log(lat, lng);
     searchBoxChange(lat, lng);
   };
 
@@ -42,7 +41,6 @@ function ApartmentsListMap(props) {
   }, []);
 
   const openInfoWindow = (index) => {
-    console.log("wuifewhuiefhui", infoWindowOpen);
     let tempInfoWindowOpen = new Array(totalApartments.totalCount).fill(false);
     tempInfoWindowOpen[index] = !infoWindowOpen[index];
     setInfoWindowOpen(tempInfoWindowOpen);

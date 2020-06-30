@@ -1,4 +1,5 @@
 const User = require("../models/user.js");
+const Apartment = require("../models/apartment.js");
 
 function formatSort(order, orderBy) {
   let sort = {};
@@ -112,12 +113,10 @@ async function deleteUser(req, res, next) {
       const user = await User.findOne({ _id: userId });
       await user.remove();
 
-      if (user.role === "realtor") {
-        // remove his/her apartments
-      }
+      await Apartment.deleteMany({ realtor: userId });
       res.status(204).send();
     } catch (err) {
-      return next(err);
+      res.status(404).send("The user with this id doesn't exist");
     }
   } else {
     res.status(401).send("This user doesn't have permission to delete user");

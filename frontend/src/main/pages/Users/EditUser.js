@@ -76,7 +76,6 @@ export default function EditUser() {
   }, []);
 
   const onSubmit = (data) => {
-    console.log("data", data);
     const { _id } = user;
     dispatch(
       actions.updateUser({

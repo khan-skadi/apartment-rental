@@ -26,14 +26,22 @@ const Main = (props) => {
         {!me && <Route exact path="/login" component={Login}></Route>}
         {me && <Route exact path="/main" component={Rent}></Route>}
         {me && <Route exact path="/profile" component={Profile}></Route>}
-        {me && <Route exact path="/users" component={Users}></Route>}
-        {me && <Route exact path="/user/add" component={AddUser}></Route>}
-        {me && <Route exact path="/user/:id" component={EditUser}></Route>}
-        {me && <Route exact path="/apartments" component={Apartments}></Route>}
-        {me && (
+        {me && me.role === "admin" && (
+          <Route exact path="/users" component={Users}></Route>
+        )}
+        {me && me.role === "admin" && (
+          <Route exact path="/user/add" component={AddUser}></Route>
+        )}
+        {me && me.role === "admin" && (
+          <Route exact path="/user/:id" component={EditUser}></Route>
+        )}
+        {me && (me.role === "admin" || me.role === "realtor") && (
+          <Route exact path="/apartments" component={Apartments}></Route>
+        )}
+        {me && (me.role === "admin" || me.role === "realtor") && (
           <Route exact path="/apartment/add" component={AddApartment}></Route>
         )}
-        {me && (
+        {me && (me.role === "admin" || me.role === "realtor") && (
           <Route exact path="/apartment/:id" component={EditApartment}></Route>
         )}
         <Route path="*" render={() => <Redirect to="/" />} />

@@ -65,7 +65,6 @@ export default function AddUser() {
   }, [status]);
 
   const onSubmit = (data) => {
-    console.log("data", data);
     dispatch(
       actions.addUser({
         ...data,

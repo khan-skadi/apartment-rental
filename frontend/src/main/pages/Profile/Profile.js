@@ -81,7 +81,6 @@ export default function Profile() {
   }, [status]);
 
   const onSubmit = (data) => {
-    console.log("data", data);
     const { first_name, last_name, email, password, repassword } = data;
     if (password !== repassword) {
       setConfirmPasswordError(true);

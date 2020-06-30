@@ -177,7 +177,7 @@ async function deleteApartment(req, res, next) {
       await apartment.remove();
       res.status(204).send();
     } catch (err) {
-      return next(err);
+      res.status(404).send("The apartment with this id doesn't exist");
     }
   } else {
     res
