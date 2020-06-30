@@ -28,8 +28,8 @@ async function login(req, res, next) {
     res.status(403).send("The password doesn't match");
   }
 
-  const privateKey = process.env.JWT_PRIVATE_KEY;
-  const expiresIn = process.env.JWT_EXPIRE;
+  const privateKey = process.env.JWT_PRIVATE_KEY || "apartmentrental";
+  const expiresIn = process.env.JWT_EXPIRE || "5d";
   try {
     jwt.sign(
       {

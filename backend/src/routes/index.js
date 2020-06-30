@@ -6,7 +6,9 @@ const jwt = require("express-jwt");
 
 const router = express.Router();
 
-const authMiddleware = jwt({ secret: process.env.JWT_PRIVATE_KEY });
+const authMiddleware = jwt({
+  secret: process.env.JWT_PRIVATE_KEY || "apartmentrental",
+});
 
 router.use("/auth", authRoute);
 router.use("/users", authMiddleware, userRoute);
