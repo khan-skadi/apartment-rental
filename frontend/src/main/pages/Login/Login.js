@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, Controller, ErrorMessage } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Avatar from "@material-ui/core/Avatar";
@@ -12,8 +12,13 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+
+import { requestFailed, requestSuccess } from "../../../helper/request";
 
 import * as actions from "../../../store/actions";
+import { LOGIN } from "../../../store/actionTypes";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -35,13 +40,40 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 export default function SignIn() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { handleSubmit, control, errors } = useForm();
+  const { status } = useSelector((state) => state.auth);
+  const [snackOpen, setSnackOpen] = useState(false);
 
   const onSubmit = (data) => {
     dispatch(actions.login(data));
+  };
+
+  useEffect(() => {
+    return () => {
+      dispatch(actions.clearAuthStatus());
+    };
+  }, []);
+
+  useEffect(() => {
+    if (status === requestFailed(LOGIN)) {
+      setSnackOpen(true);
+    } else if (status === requestSuccess(LOGIN)) {
+      setSnackOpen(true);
+    }
+  }, [status]);
+
+  const snackBarhandleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackOpen(false);
   };
 
   return (
@@ -54,6 +86,16 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
+        <Snackbar
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          open={snackOpen}
+          autoHideDuration={3000}
+          onClose={snackBarhandleClose}
+        >
+          <Alert variant="filled" severity="error">
+            Incorrect email and password!
+          </Alert>
+        </Snackbar>
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={12}>
