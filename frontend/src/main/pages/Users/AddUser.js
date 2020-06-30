@@ -40,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
   formControl: {
-    margin: theme.spacing(1),
     minWidth: "100%",
     margin: "0px",
   },
@@ -53,8 +52,8 @@ function Alert(props) {
 export default function AddUser() {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { status, error } = useSelector((state) => state.user);
-  const { handleSubmit, control, errors, setValue } = useForm();
+  const { status } = useSelector((state) => state.user);
+  const { handleSubmit, control, errors } = useForm();
   const [role, setRole] = useState("client");
   const [snackOpen, setSnackOpen] = useState(false);
 

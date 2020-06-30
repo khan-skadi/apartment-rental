@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import { Autocomplete } from "@react-google-maps/api";
@@ -16,8 +16,6 @@ const infoWindowStyle = {
   border: `1px solid #ccc`,
   padding: "10px 10px",
 };
-
-const position = { lat: 33.772, lng: -117.214 };
 
 function ApartmentsListMap(props) {
   const { totalApartments } = useSelector((state) => state.apartment);

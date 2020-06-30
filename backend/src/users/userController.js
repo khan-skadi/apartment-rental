@@ -1,5 +1,5 @@
-const User = require("../models/user.js");
-const Apartment = require("../models/apartment.js");
+const User = require('../models/user.js');
+const Apartment = require('../models/apartment.js');
 
 function formatSort(order, orderBy) {
   let sort = {};
@@ -9,7 +9,7 @@ function formatSort(order, orderBy) {
 
 async function getUsers(req, res, next) {
   const user = req.user;
-  if (user.role === "admin") {
+  if (user.role === 'admin') {
     try {
       const { currentPage, rowsCount, order, orderBy } = req.query;
       const users = await User.find({ _id: { $ne: user._id } })
@@ -31,10 +31,10 @@ async function getUsers(req, res, next) {
 }
 
 async function addUser(req, res, next) {
-  if (req.user.role === "admin") {
+  if (req.user.role === 'admin') {
     try {
       if (await User.findOne({ email: req.body.email })) {
-        res.status(409).send("The email you entered already exists.");
+        res.status(409).send('The email you entered already exists.');
       }
 
       const {
@@ -42,7 +42,7 @@ async function addUser(req, res, next) {
         last_name: lastName,
         email,
         password,
-        role,
+        role
       } = req.body;
 
       const user = new User({
@@ -50,7 +50,7 @@ async function addUser(req, res, next) {
         lastName,
         email,
         password,
-        role,
+        role
       });
 
       const createdUser = await user.save();
@@ -66,7 +66,7 @@ async function addUser(req, res, next) {
 }
 
 async function updateUser(req, res, next) {
-  if (req.user.role === "admin") {
+  if (req.user.role === 'admin' || req.user._id === req.params.id) {
     try {
       let userId;
       if (req.user._id === req.params.id) {
@@ -87,14 +87,14 @@ async function updateUser(req, res, next) {
         delete authUser.password;
         res.json(authUser);
       } catch (err) {
-        if (err.name === "ValidationError") {
-          res.status(409).send("Validation Error");
+        if (err.name === 'ValidationError') {
+          res.status(409).send('Validation Error');
         } else {
           return next(err);
         }
       }
     } catch (err) {
-      return next(err);
+      res.status(404).send("The user with id doesn't exist");
     }
   } else {
     res.status(401).send("This user doesn't have permission to update user");
@@ -102,7 +102,7 @@ async function updateUser(req, res, next) {
 }
 
 async function deleteUser(req, res, next) {
-  if (req.user.role === "admin") {
+  if (req.user.role === 'admin') {
     try {
       const userId = req.params.id;
 
@@ -125,11 +125,11 @@ async function deleteUser(req, res, next) {
 
 async function getRealtors(req, res, next) {
   const user = req.user;
-  if (user.role === "admin" || user.role === "realtor") {
+  if (user.role === 'admin' || user.role === 'realtor') {
     try {
       // all realtors and admins except the request user
       const users = await User.find({
-        role: { $ne: "client" },
+        role: { $ne: 'client' }
       }).lean();
       res.send({ users });
     } catch (err) {
@@ -147,5 +147,5 @@ module.exports = {
   addUser,
   updateUser,
   deleteUser,
-  getRealtors,
+  getRealtors
 };

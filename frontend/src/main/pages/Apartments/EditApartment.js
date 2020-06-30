@@ -1,56 +1,54 @@
-import React, { useEffect, useState } from "react";
-import { useForm, Controller, ErrorMessage } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import Link from "@material-ui/core/Link";
-import Grid from "@material-ui/core/Grid";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import InputLabel from "@material-ui/core/InputLabel";
-import Geocode from "react-geocode";
+import React, { useEffect, useState } from 'react';
+import { useForm, Controller, ErrorMessage } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
+import Geocode from 'react-geocode';
 
-import ApartmentMap from "../../components/ApartmentMap";
-import * as actions from "../../../store/actions";
+import ApartmentMap from '../../components/ApartmentMap';
+import * as actions from '../../../store/actions';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.secondary.main
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(3),
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(3)
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(3, 0, 2)
   },
   formControl: {
-    margin: theme.spacing(1),
-    minWidth: "100%",
-    margin: "0px",
-  },
+    minWidth: '100%',
+    margin: '0px'
+  }
 }));
 
 export default function EditApartment() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { handleSubmit, control, errors, setValue } = useForm();
-  const [realtorId, setRealtorId] = useState("null");
+  const [realtorId, setRealtorId] = useState('null');
   const [lat, setLat] = useState(41.608635);
   const [lng, setLng] = useState(21.745275);
   const [center, setCenter] = useState({ lat, lng });
@@ -69,22 +67,25 @@ export default function EditApartment() {
         rooms,
         pricePerMonth,
         rentable,
-        realtor,
+        realtor
       } = apartment;
       setRealtorId(realtor._id);
-      setValue("name", name);
-      setValue("description", description);
-      setValue("floor_size", floorSize.$numberDecimal);
-      setValue("rooms", rooms);
-      setValue("price", pricePerMonth.$numberDecimal);
-      setValue("lat", lat.$numberDecimal);
-      setValue("lng", lng.$numberDecimal);
+      setValue('name', name);
+      setValue('description', description);
+      setValue('floor_size', floorSize.$numberDecimal);
+      setValue('rooms', rooms);
+      setValue('price', pricePerMonth.$numberDecimal);
+      setValue('lat', lat.$numberDecimal);
+      setValue('lng', lng.$numberDecimal);
+      setLat(parseFloat(lat.$numberDecimal));
+      setLng(parseFloat(lng.$numberDecimal));
+      setCenter({ lat, lng });
     }
   }, []);
 
   useEffect(() => {
-    setValue("lat", lat);
-    setValue("lng", lng);
+    setValue('lat', lat);
+    setValue('lng', lng);
     setCenter({ lat, lng });
   }, [lat, lng]);
 
@@ -96,7 +97,7 @@ export default function EditApartment() {
 
   const onSubmit = (data) => {
     Geocode.setApiKey(process.env.REACT_APP_MAP_KEY);
-    Geocode.setLanguage("en");
+    Geocode.setLanguage('en');
     Geocode.enableDebug();
     Geocode.fromLatLng(data.lat, data.lng).then(
       (response) => {
@@ -107,7 +108,7 @@ export default function EditApartment() {
             _id: apartment._id,
             realtor: realtorId,
             location: address,
-            rentable: rentStatus,
+            rentable: rentStatus
           })
         );
       },
@@ -137,8 +138,8 @@ export default function EditApartment() {
 
   const handleSearchBoxChange = (lat, lng) => {
     if (lat) {
-      setValue("lat", lat);
-      setValue("lng", lng);
+      setValue('lat', lat);
+      setValue('lng', lng);
       setCenter({ lat, lng });
     }
   };
@@ -170,7 +171,7 @@ export default function EditApartment() {
                       name="name"
                       variant="outlined"
                       rules={{
-                        required: "Name field is required",
+                        required: 'Name field is required'
                       }}
                       fullWidth
                       id="name"
@@ -194,15 +195,15 @@ export default function EditApartment() {
                       placeholder="Between -90 and 90"
                       type="number"
                       rules={{
-                        required: "Latitude field is required",
+                        required: 'Latitude field is required',
                         min: {
                           value: -90,
-                          message: "Latitude should be bigger than -90",
+                          message: 'Latitude should be bigger than -90'
                         },
                         max: {
                           value: 90,
-                          message: "Latitude should be smaller than 90",
-                        },
+                          message: 'Latitude should be smaller than 90'
+                        }
                       }}
                       id="lat"
                       onChange={handleLatChange}
@@ -222,15 +223,15 @@ export default function EditApartment() {
                       placeholder="Between -180 and 180"
                       type="number"
                       rules={{
-                        required: "Longitude field is required",
+                        required: 'Longitude field is required',
                         min: {
                           value: -180,
-                          message: "Longitude should be bigger than -180",
+                          message: 'Longitude should be bigger than -180'
                         },
                         max: {
                           value: 180,
-                          message: "Longitude should be smaller than 180",
-                        },
+                          message: 'Longitude should be smaller than 180'
+                        }
                       }}
                       fullWidth
                       id="lng"
@@ -250,7 +251,7 @@ export default function EditApartment() {
                       autoComplete="description"
                       name="description"
                       variant="outlined"
-                      rules={{ required: "Description field is required" }}
+                      rules={{ required: 'Description field is required' }}
                       fullWidth
                       id="description"
                       label="Description"
@@ -268,7 +269,7 @@ export default function EditApartment() {
                       autoComplete="floor_size"
                       name="floor_size"
                       variant="outlined"
-                      rules={{ required: "Floor Size field is required" }}
+                      rules={{ required: 'Floor Size field is required' }}
                       fullWidth
                       id="floor_size"
                       label="Floor Size"
@@ -287,7 +288,7 @@ export default function EditApartment() {
                       autoComplete="rooms"
                       name="rooms"
                       variant="outlined"
-                      rules={{ required: "Rooms field is required" }}
+                      rules={{ required: 'Rooms field is required' }}
                       fullWidth
                       id="rooms"
                       label="Rooms"
@@ -306,7 +307,7 @@ export default function EditApartment() {
                       autoComplete="price"
                       name="price"
                       variant="outlined"
-                      rules={{ required: "Price field is required" }}
+                      rules={{ required: 'Price field is required' }}
                       fullWidth
                       id="price"
                       label="Price"
@@ -357,13 +358,13 @@ export default function EditApartment() {
                           variant="outlined"
                           InputProps={{
                             ...params.InputProps,
-                            type: "search",
+                            type: 'search'
                           }}
                         />
                       )}
                       defaultValue={{
                         firstName: apartment && apartment.realtor.firstName,
-                        lastName: apartment && apartment.realtor.lastName,
+                        lastName: apartment && apartment.realtor.lastName
                       }}
                     />
                   </Grid>

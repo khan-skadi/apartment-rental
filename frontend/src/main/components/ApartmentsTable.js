@@ -1,24 +1,24 @@
-import React, { useEffect, useReducer } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import PropTypes from "prop-types";
-import { lighten, makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TablePagination from "@material-ui/core/TablePagination";
-import TableRow from "@material-ui/core/TableRow";
-import TableSortLabel from "@material-ui/core/TableSortLabel";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
-import Slider from "@material-ui/core/Slider";
-import Grid from "@material-ui/core/Grid";
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TablePagination from '@material-ui/core/TablePagination';
+import TableRow from '@material-ui/core/TableRow';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Paper from '@material-ui/core/Paper';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import Slider from '@material-ui/core/Slider';
+import Grid from '@material-ui/core/Grid';
 
-import * as actions from "../../store/actions";
+import * as actions from '../../store/actions';
 
 function createData(name, location, decription, floor_size, price, realtor) {
   return { name, location, decription, floor_size, price, realtor };
@@ -26,42 +26,42 @@ function createData(name, location, decription, floor_size, price, realtor) {
 
 const headCells = [
   {
-    id: "name",
-    align: "left",
+    id: 'name',
+    align: 'left',
     disablePadding: false,
-    label: "Name",
+    label: 'Name'
   },
-  { id: "location", numeric: true, disablePadding: false, label: "Location" },
+  { id: 'location', numeric: true, disablePadding: false, label: 'Location' },
   {
-    id: "description",
-    align: "left",
+    id: 'description',
+    align: 'left',
     disablePadding: false,
-    label: "Description",
-  },
-  {
-    id: "floorSize",
-    align: "right",
-    disablePadding: false,
-    label: "Floor Size",
+    label: 'Description'
   },
   {
-    id: "pricePerMonth",
-    align: "right",
+    id: 'floorSize',
+    align: 'right',
     disablePadding: false,
-    label: "Price per month",
+    label: 'Floor Size'
   },
   {
-    id: "rooms",
-    align: "right",
+    id: 'pricePerMonth',
+    align: 'right',
     disablePadding: false,
-    label: "Rooms",
+    label: 'Price per month'
   },
   {
-    id: "realtor",
-    align: "left",
+    id: 'rooms',
+    align: 'right',
     disablePadding: false,
-    label: "Realtor",
+    label: 'Rooms'
   },
+  {
+    id: 'realtor',
+    align: 'left',
+    disablePadding: false,
+    label: 'Realtor'
+  }
 ];
 
 function ApartmentsTableHead(props) {
@@ -77,18 +77,18 @@ function ApartmentsTableHead(props) {
           <TableCell
             key={idx}
             align={headCell.align}
-            padding={headCell.disablePadding ? "none" : "default"}
+            padding={headCell.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : "asc"}
+              direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
             >
               {headCell.label}
               {orderBy === headCell.id ? (
                 <span className={classes.visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
+                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                 </span>
               ) : null}
             </TableSortLabel>
@@ -102,23 +102,23 @@ function ApartmentsTableHead(props) {
 ApartmentsTableHead.propTypes = {
   classes: PropTypes.object.isRequired,
   onRequestSort: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(["asc", "desc"]).isRequired,
-  orderBy: PropTypes.string.isRequired,
+  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+  orderBy: PropTypes.string.isRequired
 };
 
 const useToolbarStyles = makeStyles((theme) => ({
   root: {
     paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(4),
+    paddingRight: theme.spacing(4)
   },
   title: {
-    flex: "1 1 100%",
-    paddingTop: "20px",
+    flex: '1 1 100%',
+    paddingTop: '20px'
   },
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120,
-  },
+    minWidth: 120
+  }
 }));
 
 const ApartmentsTableToolbar = (props) => {
@@ -140,6 +140,7 @@ const ApartmentsTableToolbar = (props) => {
       actions.setApartmentsFilter({ priceValue, floorSizeValue, roomsValue })
     );
     dispatch(actions.getApartments(pageInfo));
+    dispatch(actions.getTotalApartments());
   };
 
   // handle Floor Size Change
@@ -152,6 +153,7 @@ const ApartmentsTableToolbar = (props) => {
       actions.setApartmentsFilter({ priceValue, floorSizeValue, roomsValue })
     );
     dispatch(actions.getApartments(pageInfo));
+    dispatch(actions.getTotalApartments());
   };
 
   // handle Rooms Number Change
@@ -164,6 +166,7 @@ const ApartmentsTableToolbar = (props) => {
       actions.setApartmentsFilter({ priceValue, floorSizeValue, roomsValue })
     );
     dispatch(actions.getApartments(pageInfo));
+    dispatch(actions.getTotalApartments());
   };
 
   return (
@@ -249,34 +252,34 @@ const ApartmentsTableToolbar = (props) => {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: "100%",
+    width: '100%',
     paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
+    paddingRight: theme.spacing(1)
   },
   paper: {
-    width: "100%",
-    marginBottom: theme.spacing(2),
+    width: '100%',
+    marginBottom: theme.spacing(2)
   },
   table: {
-    minWidth: 750,
+    minWidth: 750
   },
   visuallyHidden: {
     border: 0,
-    clip: "rect(0 0 0 0)",
+    clip: 'rect(0 0 0 0)',
     height: 1,
     margin: -1,
-    overflow: "hidden",
+    overflow: 'hidden',
     padding: 0,
-    position: "absolute",
+    position: 'absolute',
     top: 20,
-    width: 1,
-  },
+    width: 1
+  }
 }));
 
 export default function ApartmentsTable() {
   const classes = useStyles();
-  const [order, setOrder] = React.useState("desc");
-  const [orderBy, setOrderBy] = React.useState("created");
+  const [order, setOrder] = React.useState('desc');
+  const [orderBy, setOrderBy] = React.useState('created');
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -296,8 +299,8 @@ export default function ApartmentsTable() {
   const { apartments, totalCount } = apartmentsInfo;
 
   const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
@@ -324,7 +327,7 @@ export default function ApartmentsTable() {
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
-            size={dense ? "small" : "medium"}
+            size={dense ? 'small' : 'medium'}
             aria-label="enhanced table"
           >
             <ApartmentsTableHead

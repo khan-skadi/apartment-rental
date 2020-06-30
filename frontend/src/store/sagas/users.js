@@ -1,4 +1,4 @@
-import { put, call, select } from "redux-saga/effects";
+import { put, call } from "redux-saga/effects";
 import { push } from "connected-react-router";
 import {
   requestPending,

@@ -1,6 +1,6 @@
-const User = require("../models/user.js");
-const jwt = require("jsonwebtoken");
-const { use } = require("./authRoute.js");
+const User = require('../models/user.js');
+const jwt = require('jsonwebtoken');
+const { use } = require('./authRoute.js');
 
 async function login(req, res, next) {
   const { email, password } = req.body;
@@ -11,7 +11,7 @@ async function login(req, res, next) {
   try {
     user = await User.find()
       .where({ email })
-      .select("_id firstName lastName email role password")
+      .select('_id firstName lastName email role password')
       .exec();
     user = user[0];
   } catch (err) {
@@ -19,7 +19,7 @@ async function login(req, res, next) {
   }
 
   if (!user) {
-    return next(new Error());
+    res.status(404).send("The user with this email doesn't exist");
   }
 
   try {
@@ -28,8 +28,8 @@ async function login(req, res, next) {
     res.status(403).send("The password doesn't match");
   }
 
-  const privateKey = process.env.JWT_PRIVATE_KEY || "apartmentrental";
-  const expiresIn = process.env.JWT_EXPIRE || "5d";
+  const privateKey = process.env.JWT_PRIVATE_KEY || 'apartmentrental';
+  const expiresIn = process.env.JWT_EXPIRE || '5d';
   try {
     jwt.sign(
       {
@@ -37,7 +37,7 @@ async function login(req, res, next) {
         email: user.email,
         role: user.role,
         firstName: user.firstName,
-        lastName: user.lastName,
+        lastName: user.lastName
       },
       privateKey,
       { expiresIn },
@@ -49,7 +49,7 @@ async function login(req, res, next) {
           lastName: user.lastName,
           email: user.email,
           role: user.role,
-          token: token,
+          token: token
         });
       }
     );
@@ -60,14 +60,14 @@ async function login(req, res, next) {
 
 async function signup(req, res, next) {
   if (await User.findOne({ email: req.body.email })) {
-    res.status(409).send("The email you entered already exists.");
+    res.status(409).send('The email you entered already exists.');
   }
 
   const user = new User({
     firstName: req.body.first_name,
     lastName: req.body.last_name,
     email: req.body.email,
-    password: req.body.password,
+    password: req.body.password
   });
 
   try {
@@ -82,5 +82,5 @@ async function signup(req, res, next) {
 
 module.exports = {
   signup,
-  login,
+  login
 };

@@ -3,7 +3,6 @@ import {
   GET_USERS,
   ADD_USER,
   UPDATE_USER,
-  DELETE_USER,
   SAVE_EDIT_USER,
 } from "../actionTypes";
 import {

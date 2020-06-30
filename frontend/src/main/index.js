@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Route, Switch, Redirect } from "react-router-dom";
 import Header from "./components/Header";
 import Home from "./pages/Home";
@@ -16,7 +16,6 @@ import Profile from "./pages/Profile";
 
 const Main = (props) => {
   const { me } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
   return (
     <>
       <Header />
