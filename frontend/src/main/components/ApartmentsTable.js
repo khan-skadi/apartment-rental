@@ -109,10 +109,11 @@ ApartmentsTableHead.propTypes = {
 const useToolbarStyles = makeStyles((theme) => ({
   root: {
     paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
+    paddingRight: theme.spacing(4),
   },
   title: {
     flex: "1 1 100%",
+    paddingTop: "20px",
   },
   formControl: {
     margin: theme.spacing(1),

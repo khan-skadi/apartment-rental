@@ -8,7 +8,7 @@ import { InfoWindow } from "@react-google-maps/api";
 
 const containerStyle = {
   width: "100%",
-  height: "100%",
+  height: "91%",
 };
 
 const infoWindowStyle = {
@@ -20,7 +20,6 @@ const position = { lat: 33.772, lng: -117.214 };
 
 function ApartmentsListMap(props) {
   const { totalApartments } = useSelector((state) => state.apartment);
-  console.log("------------", totalApartments);
   const { placeholder, center, searchBoxChange } = props;
   const [autoComplete, setAutoComplete] = useState(null);
   const [infoWindowOpen, setInfoWindowOpen] = useState([]);
