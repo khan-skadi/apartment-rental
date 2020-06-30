@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -89,6 +90,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Header() {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
   const { me } = useSelector((state) => state.auth);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -102,6 +104,11 @@ export default function Header() {
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
+  };
+
+  const goToProfile = () => {
+    handleMenuClose();
+    history.push("/profile");
   };
 
   const handleMenuClose = () => {
@@ -129,7 +136,7 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={goToProfile}>Profile</MenuItem>
       <MenuItem onClick={handleLogout}>Log out</MenuItem>
     </Menu>
   );
@@ -155,22 +162,26 @@ export default function Header() {
               <p>Find Apartment</p>
             </MenuItem>
           </NavLink>
-          <NavLink to="/users">
-            <MenuItem>
-              <IconButton color="inherit">
-                <PeopleIcon />
-              </IconButton>
-              <p>Users</p>
-            </MenuItem>
-          </NavLink>
-          <NavLink to="/apartments">
-            <MenuItem>
-              <IconButton color="inherit">
-                <ApartmentIcon />
-              </IconButton>
-              <p>Apartments</p>
-            </MenuItem>
-          </NavLink>
+          {me.role === "admin" && (
+            <NavLink to="/users">
+              <MenuItem>
+                <IconButton color="inherit">
+                  <PeopleIcon />
+                </IconButton>
+                <p>Users</p>
+              </MenuItem>
+            </NavLink>
+          )}
+          {(me.role === "admin" || me.role === "realtor") && (
+            <NavLink to="/apartments">
+              <MenuItem>
+                <IconButton color="inherit">
+                  <ApartmentIcon />
+                </IconButton>
+                <p>Apartments</p>
+              </MenuItem>
+            </NavLink>
+          )}
           <MenuItem onClick={handleProfileMenuOpen}>
             <IconButton
               aria-label="account of current user"
@@ -184,7 +195,7 @@ export default function Header() {
           </MenuItem>
         </>
       ) : (
-        <NavLink to="/signup">
+        <NavLink to="/login">
           <MenuItem>
             <IconButton color="inherit" className={classes.signupButton}>
               <KeyboardReturnIcon />
@@ -222,16 +233,20 @@ export default function Header() {
                     <SearchIcon />
                   </IconButton>
                 </NavLink>
-                <NavLink to="/users">
-                  <IconButton className={classes.menuButton}>
-                    <PeopleIcon />
-                  </IconButton>
-                </NavLink>
-                <NavLink to="/apartments">
-                  <IconButton className={classes.menuButton}>
-                    <ApartmentIcon />
-                  </IconButton>
-                </NavLink>
+                {me.role === "admin" && (
+                  <NavLink to="/users">
+                    <IconButton className={classes.menuButton}>
+                      <PeopleIcon />
+                    </IconButton>
+                  </NavLink>
+                )}
+                {(me.role === "admin" || me.role === "realtor") && (
+                  <NavLink to="/apartments">
+                    <IconButton className={classes.menuButton}>
+                      <ApartmentIcon />
+                    </IconButton>
+                  </NavLink>
+                )}
                 <IconButton
                   edge="end"
                   aria-label="account of current user"
@@ -244,7 +259,7 @@ export default function Header() {
                 </IconButton>
               </>
             ) : (
-              <NavLink to="/signup">
+              <NavLink to="/login">
                 <IconButton color="inherit" className={classes.signupButton}>
                   <KeyboardReturnIcon />
                 </IconButton>

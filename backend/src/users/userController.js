@@ -67,13 +67,18 @@ async function addUser(req, res, next) {
 async function updateUser(req, res, next) {
   if (req.user.role === "admin") {
     try {
-      const userId = req.params.id;
+      let userId;
+      if (req.user._id === req.params.id) {
+        userId = req.user._id;
+      } else {
+        userId = req.params.id;
+      }
       const user = await User.findOne({ _id: userId });
 
       user.firstName = req.body.first_name || user.firstName;
       user.lastName = req.body.last_name || user.lastName;
       user.email = req.body.email || user.email;
-      user.password = req.body.password || user.password;
+      if (req.body.password) user.password = req.body.password;
       user.role = req.body.role || user.role;
       try {
         const updatedUser = await user.save();

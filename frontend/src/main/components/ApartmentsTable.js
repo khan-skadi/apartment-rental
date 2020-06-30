@@ -27,38 +27,38 @@ function createData(name, location, decription, floor_size, price, realtor) {
 const headCells = [
   {
     id: "name",
-    numeric: false,
+    align: "left",
     disablePadding: false,
     label: "Name",
   },
   { id: "location", numeric: true, disablePadding: false, label: "Location" },
   {
     id: "description",
-    numeric: true,
+    align: "left",
     disablePadding: false,
     label: "Description",
   },
   {
     id: "floorSize",
-    numeric: true,
+    align: "right",
     disablePadding: false,
     label: "Floor Size",
   },
   {
     id: "pricePerMonth",
-    numeric: true,
+    align: "right",
     disablePadding: false,
     label: "Price per month",
   },
   {
     id: "rooms",
-    numeric: true,
+    align: "right",
     disablePadding: false,
     label: "Rooms",
   },
   {
     id: "realtor",
-    numeric: true,
+    align: "left",
     disablePadding: false,
     label: "Realtor",
   },
@@ -76,7 +76,7 @@ function ApartmentsTableHead(props) {
         {headCells.map((headCell, idx) => (
           <TableCell
             key={idx}
-            align={headCell.numeric ? "right" : "left"}
+            align={headCell.align}
             padding={headCell.disablePadding ? "none" : "default"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -342,8 +342,8 @@ export default function ApartmentsTable() {
                       <TableCell component="th" id={labelId} scope="row">
                         {row.name}
                       </TableCell>
-                      <TableCell align="right">{row.location}</TableCell>
-                      <TableCell align="right">{row.description}</TableCell>
+                      <TableCell align="left">{row.location}</TableCell>
+                      <TableCell align="left">{row.description}</TableCell>
                       <TableCell align="right">
                         {row.floorSize && row.floorSize.$numberDecimal}
                       </TableCell>
@@ -351,7 +351,7 @@ export default function ApartmentsTable() {
                         {row.pricePerMonth && row.pricePerMonth.$numberDecimal}
                       </TableCell>
                       <TableCell align="right">{row.rooms}</TableCell>
-                      <TableCell align="right">
+                      <TableCell align="left">
                         {row.realtor &&
                           `${row.realtor.firstName} ${row.realtor.lastName}`}
                       </TableCell>

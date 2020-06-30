@@ -16,7 +16,6 @@ import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
-import Slider from "@material-ui/core/Slider";
 import Grid from "@material-ui/core/Grid";
 import { NavLink } from "react-router-dom";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -33,52 +32,22 @@ import * as actions from "../../store/actions";
 
 const headCells = [
   {
-    id: "name",
+    id: "firstName",
     align: "left",
     disablePadding: false,
     label: "Name",
   },
   {
-    id: "location",
+    id: "email",
     align: "left",
     disablePadding: false,
-    label: "Location",
+    label: "Email",
   },
   {
-    id: "description",
+    id: "role",
     align: "left",
     disablePadding: false,
-    label: "Description",
-  },
-  {
-    id: "floorSize",
-    align: "right",
-    disablePadding: false,
-    label: "Floor Size",
-  },
-  {
-    id: "pricePerMonth",
-    align: "right",
-    disablePadding: false,
-    label: "Price per month",
-  },
-  {
-    id: "rooms",
-    align: "right",
-    disablePadding: false,
-    label: "Rooms",
-  },
-  {
-    id: "realtor",
-    align: "left",
-    disablePadding: false,
-    label: "Realtor",
-  },
-  {
-    id: "rentable",
-    align: "left",
-    disablePadding: false,
-    label: "Rentable",
+    label: "Role",
   },
   {
     id: "actions",
@@ -88,7 +57,7 @@ const headCells = [
   },
 ];
 
-function RealtorTableHead(props) {
+function UsersTableHead(props) {
   const { classes, order, orderBy, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -129,7 +98,7 @@ function RealtorTableHead(props) {
   );
 }
 
-RealtorTableHead.propTypes = {
+UsersTableHead.propTypes = {
   classes: PropTypes.object.isRequired,
   onRequestSort: PropTypes.func.isRequired,
   order: PropTypes.oneOf(["asc", "desc"]).isRequired,
@@ -158,134 +127,28 @@ const useToolbarStyles = makeStyles((theme) => ({
   },
 }));
 
-const RealtorTableToolbar = (props) => {
-  const dispatch = useDispatch();
+const UsersTableToolbar = (props) => {
   const classes = useToolbarStyles();
-  const [priceValue, setPriceValue] = React.useState([1, 10000]);
-  const [floorSizeValue, setFloorSizeValue] = React.useState([1, 10000]);
-  const [roomsValue, setRoomsValue] = React.useState([1, 10]);
-
-  const { pageInfo } = props;
-
-  // handle Price Change
-  const handlePriceChange = (event, newValue) => {
-    setPriceValue(newValue);
-  };
-  const handlePriceUp = (event, newValue) => {
-    setPriceValue(newValue);
-    dispatch(
-      actions.setApartmentsFilter({ priceValue, floorSizeValue, roomsValue })
-    );
-    dispatch(actions.getApartments({ ...pageInfo }));
-  };
-
-  // handle Floor Size Change
-  const handleFloorSizeChange = (event, newValue) => {
-    setFloorSizeValue(newValue);
-  };
-  const handleFloorSizeUp = (event, newValue) => {
-    setFloorSizeValue(newValue);
-    dispatch(
-      actions.setApartmentsFilter({ priceValue, floorSizeValue, roomsValue })
-    );
-    dispatch(actions.getApartments({ ...pageInfo }));
-  };
-
-  // handle Rooms Number Change
-  const handleRoomsChange = (event, newValue) => {
-    setRoomsValue(newValue);
-  };
-  const handleRoomsUp = (event, newValue) => {
-    setRoomsValue(newValue);
-    dispatch(
-      actions.setApartmentsFilter({ priceValue, floorSizeValue, roomsValue })
-    );
-    dispatch(actions.getApartments({ ...pageInfo }));
-  };
-
   return (
     <Toolbar className={classes.root}>
-      <Grid container spacing={4}>
-        <Grid item xs={12} sm={3}>
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={9}>
           <Typography
             className={classes.title}
             variant="h6"
             id="tableTitle"
             component="div"
           >
-            Manage Apartments
+            Manage Users
           </Typography>
-        </Grid>
-        <Grid item xs={12} sm={2}>
-          <Typography
-            className={classes.title}
-            variant="h6"
-            id="tableTitle"
-            component="div"
-          >
-            Price
-          </Typography>
-          <Slider
-            value={priceValue}
-            onChange={handlePriceChange}
-            onChangeCommitted={handlePriceUp}
-            valueLabelDisplay="auto"
-            aria-labelledby="range-slider"
-            max={10000}
-            min={1}
-            step={1000}
-            marks={true}
-          />
-        </Grid>
-        <Grid item xs={12} sm={2}>
-          <Typography
-            className={classes.title}
-            variant="h6"
-            id="tableTitle"
-            component="div"
-          >
-            Rooms
-          </Typography>
-          <Slider
-            value={roomsValue}
-            onChange={handleRoomsChange}
-            onChangeCommitted={handleRoomsUp}
-            valueLabelDisplay="auto"
-            aria-labelledby="range-slider"
-            max={10}
-            min={1}
-            step={1}
-            marks={true}
-          />
-        </Grid>
-        <Grid item xs={12} sm={2}>
-          <Typography
-            className={classes.title}
-            variant="h6"
-            id="tableTitle"
-            component="div"
-          >
-            Floor Size
-          </Typography>
-          <Slider
-            value={floorSizeValue}
-            onChange={handleFloorSizeChange}
-            onChangeCommitted={handleFloorSizeUp}
-            valueLabelDisplay="auto"
-            aria-labelledby="range-slider"
-            max={10000}
-            min={1}
-            step={1000}
-            marks={true}
-          />
         </Grid>
         <Grid item xs={12} sm={3}>
-          <NavLink to="/apartment/add" className={classes.addLink}>
+          <NavLink to="/user/add" className={classes.addLink}>
             <MenuItem className={classes.add}>
               <IconButton color="inherit">
                 <AddCircleIcon />
               </IconButton>
-              <p>Add Apartment</p>
+              <p>Add User</p>
             </MenuItem>
           </NavLink>
         </Grid>
@@ -296,9 +159,10 @@ const RealtorTableToolbar = (props) => {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: "100%",
+    width: "70%",
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(1),
+    margin: "auto",
   },
   paper: {
     width: "100%",
@@ -319,7 +183,7 @@ const useStyles = makeStyles((theme) => ({
     width: 1,
   },
   actions: {
-    width: "18%",
+    // width: "10%",
   },
   actionButtons: {
     margin: theme.spacing(1),
@@ -332,7 +196,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function RealtorTable() {
+export default function UsersTable() {
   const history = useHistory();
   const classes = useStyles();
   const [order, setOrder] = React.useState("desc");
@@ -340,19 +204,13 @@ export default function RealtorTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [apartmentDeleteId, setApartmentDeleteId] = useState(null);
+  const [userDeleteId, setUserDeleteId] = useState(null);
   const [openDelete, setOpenDelete] = useState(false);
 
   const dispatch = useDispatch();
   useEffect(() => {
-    const priceValue = [1, 10000];
-    const floorSizeValue = [1, 10000];
-    const roomsValue = [1, 10];
     dispatch(
-      actions.setApartmentsFilter({ priceValue, floorSizeValue, roomsValue })
-    );
-    dispatch(
-      actions.getApartments({
+      actions.getUsers({
         order,
         orderBy,
         rowsPerPage,
@@ -361,8 +219,8 @@ export default function RealtorTable() {
     );
   }, [order, orderBy, page, rowsPerPage]);
 
-  const { apartmentsInfo } = useSelector((state) => state.apartment);
-  const { apartments, totalCount } = apartmentsInfo;
+  const { usersInfo } = useSelector((state) => state.user);
+  const { users, totalCount } = usersInfo;
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -384,12 +242,12 @@ export default function RealtorTable() {
   };
 
   const handleEdit = (row) => {
-    dispatch(actions.saveEditApartment(row));
-    history.push(`/apartment/${row._id}`);
+    dispatch(actions.saveEditUser(row));
+    history.push(`/user/${row._id}`);
   };
 
   const handleDelete = () => {
-    dispatch(actions.deleteApartment({ id: apartmentDeleteId }));
+    dispatch(actions.deleteUser({ id: userDeleteId }));
     setPage(0);
     setOrder("desc");
     setOrderBy("created");
@@ -398,7 +256,7 @@ export default function RealtorTable() {
   };
 
   const showDeleteDiaglog = (id) => {
-    setApartmentDeleteId(id);
+    setUserDeleteId(id);
     setOpenDelete(true);
   };
 
@@ -409,7 +267,7 @@ export default function RealtorTable() {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <RealtorTableToolbar pageInfo={{ order, orderBy, rowsPerPage, page }} />
+        <UsersTableToolbar />
         <TableContainer>
           <Table
             className={classes.table}
@@ -417,38 +275,24 @@ export default function RealtorTable() {
             size={dense ? "small" : "medium"}
             aria-label="enhanced table"
           >
-            <RealtorTableHead
+            <UsersTableHead
               classes={classes}
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
             />
             <TableBody>
-              {apartments &&
-                apartments.map((row, index) => {
+              {users &&
+                users.map((row, index) => {
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow hover tabIndex={-1} key={index}>
                       <TableCell component="th" id={labelId} scope="row">
-                        {row.name}
+                        {`${row.firstName} ${row.lastName}`}
                       </TableCell>
-                      <TableCell align="left">{row.location}</TableCell>
-                      <TableCell align="left">{row.description}</TableCell>
-                      <TableCell align="right">
-                        {row.floorSize && row.floorSize.$numberDecimal}
-                      </TableCell>
-                      <TableCell align="right">
-                        {row.pricePerMonth && row.pricePerMonth.$numberDecimal}
-                      </TableCell>
-                      <TableCell align="right">{row.rooms}</TableCell>
-                      <TableCell align="left">
-                        {row.realtor &&
-                          `${row.realtor.firstName} ${row.realtor.lastName}`}
-                      </TableCell>
-                      <TableCell align="left">
-                        {row.rentable ? "Rentable" : "Rent"}
-                      </TableCell>
+                      <TableCell align="left">{row.email}</TableCell>
+                      <TableCell align="left">{row.role}</TableCell>
                       <TableCell align="center" className={classes.actions}>
                         <Button
                           className={classes.actionButtons}
@@ -495,10 +339,10 @@ export default function RealtorTable() {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Delete Apartment</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Delete User</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Do you want to delete this apartment?
+            Do you want to delete this user?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

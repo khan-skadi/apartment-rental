@@ -17,7 +17,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import { requestFailed } from "../../../helper/request";
-import { ADD_USER } from "../../../store/actionTypes";
+import { UPDATE_USER } from "../../../store/actionTypes";
 
 import * as actions from "../../../store/actions";
 
@@ -50,25 +50,38 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-export default function AddUser() {
+export default function EditUser() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { status, error } = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
   const { handleSubmit, control, errors, setValue } = useForm();
   const [role, setRole] = useState("client");
   const [snackOpen, setSnackOpen] = useState(false);
 
   useEffect(() => {
-    if (status === requestFailed(ADD_USER)) {
+    if (status === requestFailed(UPDATE_USER)) {
       setSnackOpen(true);
     }
   }, [status]);
 
+  useEffect(() => {
+    if (user) {
+      const { firstName, lastName, email, role } = user;
+      setValue("first_name", firstName);
+      setValue("last_name", lastName);
+      setValue("email", email);
+      setRole(role);
+    }
+  }, []);
+
   const onSubmit = (data) => {
     console.log("data", data);
+    const { _id } = user;
     dispatch(
-      actions.addUser({
+      actions.updateUser({
         ...data,
+        _id,
         role,
       })
     );
@@ -96,7 +109,7 @@ export default function AddUser() {
                 <LockOutlinedIcon />
               </Avatar>
               <Typography component="h1" variant="h5">
-                Add User
+                Edit User
               </Typography>
               <Snackbar
                 anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -172,7 +185,6 @@ export default function AddUser() {
                     <Controller
                       as={TextField}
                       control={control}
-                      rules={{ required: "Password field is required" }}
                       variant="outlined"
                       fullWidth
                       name="password"
@@ -216,7 +228,7 @@ export default function AddUser() {
                   color="primary"
                   className={classes.submit}
                 >
-                  Add User
+                  Edit User
                 </Button>
               </form>
             </div>

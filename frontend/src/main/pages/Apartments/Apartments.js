@@ -6,11 +6,7 @@ import RealtorTable from "../../components/RealtorTable";
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-  },
-  map: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
+    margin: "20px 30px 30px 0px",
   },
 }));
 

@@ -14,14 +14,14 @@ const initialState = {
   loading: false,
   status: "INIT",
   error: null,
-  apartmentsInfo: [],
+  apartmentsInfo: { apartments: [], totalCount: 0 },
   apartmentsFilter: {
     priceValue: [1, 10000],
     floorSizeValue: [1, 10000],
     roomsValue: [1, 10],
   },
   apartment: null,
-  totalApartments: [],
+  totalApartments: { apartments: [], totalCount: 0 },
 };
 
 export const apartmentReducer = function (state = initialState, action) {

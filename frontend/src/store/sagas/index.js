@@ -9,9 +9,14 @@ import {
   GET_APARTMENTS,
   GET_REALTORS,
   GET_TOTAL_APARTMENTS,
+  ADD_USER,
+  GET_USERS,
+  UPDATE_USER,
+  DELETE_USER,
+  UPDATE_ME,
 } from "../actionTypes";
 
-import { signupSaga, loginSaga, logoutSaga } from "./auth";
+import { signupSaga, loginSaga, logoutSaga, updateMeSaga } from "./auth";
 import {
   addApartmentSaga,
   getApartmentsSaga,
@@ -19,7 +24,13 @@ import {
   deleteApartmentSaga,
   getTotalApartmentsSaga,
 } from "./apartment";
-import { getRealtorsSaga } from "./users";
+import {
+  getRealtorsSaga,
+  addUserSaga,
+  updateUserSaga,
+  deleteUserSaga,
+  getUsersSaga,
+} from "./users";
 
 export default function* rootSaga() {
   yield all([
@@ -31,6 +42,11 @@ export default function* rootSaga() {
     takeEvery(DELETE_APARTMENT, deleteApartmentSaga),
     takeEvery(GET_APARTMENTS, getApartmentsSaga),
     takeEvery(GET_TOTAL_APARTMENTS, getTotalApartmentsSaga),
+    takeEvery(ADD_USER, addUserSaga),
+    takeEvery(UPDATE_USER, updateUserSaga),
+    takeEvery(DELETE_USER, deleteUserSaga),
+    takeEvery(GET_USERS, getUsersSaga),
+    takeEvery(UPDATE_ME, updateMeSaga),
     takeEvery(LOGOUT, logoutSaga),
   ]);
 }

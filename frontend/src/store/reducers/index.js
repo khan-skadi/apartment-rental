@@ -9,7 +9,7 @@ import { userReducer } from "./user";
 const authPersistConfig = {
   key: "auth",
   storage: storage,
-  blacklist: [],
+  blacklist: ["loading", "status", "error"],
 };
 
 const apartmentPersistConfig = {

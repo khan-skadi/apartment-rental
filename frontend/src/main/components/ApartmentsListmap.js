@@ -14,7 +14,6 @@ const containerStyle = {
 const infoWindowStyle = {
   background: `white`,
   border: `1px solid #ccc`,
-  padding: 15,
 };
 
 const position = { lat: 33.772, lng: -117.214 };
@@ -73,8 +72,8 @@ function ApartmentsListMap(props) {
               {infoWindowOpen[index] && (
                 <InfoWindow onCloseClick={() => openInfoWindow(index)}>
                   <div style={infoWindowStyle}>
-                    <h6>{apartment.name}</h6>
-                    <p>{apartment.description}</p>
+                    <h6>Name: {apartment.name}</h6>
+                    <p>Description: {apartment.description}</p>
                   </div>
                 </InfoWindow>
               )}

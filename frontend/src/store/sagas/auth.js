@@ -6,7 +6,7 @@ import {
   requestFailed,
 } from "../../helper/request";
 import apiCall from "../../helper/apiCall";
-import { SIGNUP, LOGIN, REMOVE_AUTH } from "../actionTypes";
+import { SIGNUP, LOGIN, REMOVE_AUTH, UPDATE_ME } from "../actionTypes";
 
 export function* signupSaga(action) {
   try {
@@ -35,6 +35,25 @@ export function* loginSaga(action) {
     yield put(push("/main"));
   } catch (error) {
     yield put({ type: requestFailed(LOGIN), payload: error.response });
+  }
+}
+
+export function* updateMeSaga(action) {
+  try {
+    yield put({ type: requestPending(UPDATE_ME) });
+    const response = yield call(
+      apiCall,
+      `/users/${action.payload._id}`,
+      "PUT",
+      action.payload,
+      true
+    );
+    yield put({ type: requestSuccess(UPDATE_ME), payload: response.data });
+  } catch (error) {
+    yield put({
+      type: requestFailed(UPDATE_ME),
+      payload: error.response,
+    });
   }
 }
 
