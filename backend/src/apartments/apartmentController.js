@@ -77,6 +77,7 @@ async function getApartments(req, res, next) {
         .lt(roomsMax + 1)
         .where("rentable")
         .equals(true)
+        .populate("realtor")
         .sort(formatSort(order, orderBy))
         .skip(parseInt(currentPage) * parseInt(rowsCount))
         .limit(parseInt(rowsCount))

@@ -200,7 +200,6 @@ export default function Header() {
             <IconButton color="inherit" className={classes.signupButton}>
               <KeyboardReturnIcon />
             </IconButton>
-            <p>Log out</p>
           </MenuItem>
         </NavLink>
       )}
