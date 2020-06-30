@@ -19,9 +19,15 @@ function ApartmentMap(props) {
     const { geometry } = autoComplete.getPlace();
     const lat = geometry && geometry.location.lat();
     const lng = geometry && geometry.location.lng();
-    console.log(lat, lng);
     searchBoxChange(lat, lng);
   };
+
+  const handleMapClick = (e) => {
+    if (e) {
+      searchBoxChange(e.latLng.lat(), e.latLng.lng());
+    }
+  };
+
   return (
     <LoadScript
       googleMapsApiKey={process.env.REACT_APP_MAP_KEY}
@@ -32,6 +38,7 @@ function ApartmentMap(props) {
         mapContainerStyle={containerStyle}
         zoom={10}
         center={center}
+        onClick={handleMapClick}
       >
         <Marker onLoad={onLoad} position={center} />
         <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>

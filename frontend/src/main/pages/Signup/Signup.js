@@ -91,7 +91,7 @@ export default function SignUp() {
           onClose={snackBarhandleClose}
         >
           <Alert variant="filled" severity="error">
-            The email you want to change is already in the datbase!
+            The email you want to signup is already in the datbase!
           </Alert>
         </Snackbar>
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
