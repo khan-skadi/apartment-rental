@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
-import { GoogleMap, LoadScript } from "@react-google-maps/api";
-import { Autocomplete } from "@react-google-maps/api";
-import { Marker } from "@react-google-maps/api";
-import { InfoWindow } from "@react-google-maps/api";
+import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import { Autocomplete } from '@react-google-maps/api';
+import { Marker } from '@react-google-maps/api';
+import { InfoWindow } from '@react-google-maps/api';
 
 const containerStyle = {
-  width: "100%",
-  height: "91%",
+  width: '100%',
+  height: '91%'
 };
 
 const infoWindowStyle = {
   background: `white`,
   border: `1px solid #ccc`,
-  padding: "10px 10px",
+  padding: '10px 10px'
 };
 
 function ApartmentsListMap(props) {
@@ -25,6 +25,7 @@ function ApartmentsListMap(props) {
   const onLoad = (autoComplete) => {
     setAutoComplete(autoComplete);
   };
+  console.log(totalApartments);
 
   const onPlaceChanged = () => {
     const { geometry } = autoComplete.getPlace();
@@ -47,7 +48,7 @@ function ApartmentsListMap(props) {
   return (
     <LoadScript
       googleMapsApiKey={process.env.REACT_APP_MAP_KEY}
-      libraries={["places"]}
+      libraries={['places']}
     >
       <GoogleMap
         id="searchbox-example"
@@ -61,7 +62,7 @@ function ApartmentsListMap(props) {
               key={index}
               position={{
                 lat: parseFloat(apartment.lat.$numberDecimal),
-                lng: parseFloat(apartment.lng.$numberDecimal),
+                lng: parseFloat(apartment.lng.$numberDecimal)
               }}
               onClick={() => openInfoWindow(index)}
             >
@@ -104,9 +105,9 @@ function ApartmentsListMap(props) {
               fontSize: `14px`,
               outline: `none`,
               textOverflow: `ellipses`,
-              position: "absolute",
-              left: "50%",
-              marginLeft: "-120px",
+              position: 'absolute',
+              left: '50%',
+              marginLeft: '-120px'
             }}
           />
         </Autocomplete>
